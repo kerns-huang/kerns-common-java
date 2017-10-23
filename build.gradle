@@ -1,0 +1,285 @@
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'jacoco'
+
+    test {
+        ignoreFailures = true
+    }
+    group = 'com.kerns'
+    version = '1.0.0-SNAPSHOT'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    configurations {
+        /*适用全部范围
+        configurations.all {*/
+        /*全部范围排除log4j
+        all.exclude module: 'log4j'
+        */
+        /* 强制指定版本
+        resolutionStrategy {
+            force 'org.hamcrest:hamcrest-core:1.3'
+        }*/
+        //compile.exclude module: 'log4j'
+        //compile.exclude module: 'commons-logging'
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "http://121.43.169.171:8081/nexus/content/groups/public/" }
+        mavenCentral()
+    }
+
+    task uploadSnapshotArchives(dependsOn: uploadArchives) {
+        if (!version.endsWith("-SNAPSHOT")) {
+            enabled = false;
+            dependsOn = [];
+        }
+    }
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+
+                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/snapshots/") {
+                    authentication(userName: "admin", password: "admin123")
+                }
+                //发布前禁止更新releases版本
+/*
+                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/releases/") {
+                    authentication(userName: "admin", password: "admin123")
+                }*/
+
+
+                pom.project {
+                    name project.name
+                    packaging 'jar'
+                    description 'kerns-commons'
+                    url 'http://www.huiguan.com'
+
+                    scm {
+                        url ''
+                        connection ''
+                        developerConnection ''
+                    }
+
+                    licenses {
+                        license {
+                            name 'No License'
+                            url 'http://www.huiguan.com'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'juyongcheng'
+                            name 'Yongcheng Ju'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from 'build/docs/javadoc'
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    javadoc {
+        options {
+            encoding 'UTF-8'
+            charSet 'UTF-8'
+            author true
+            version true
+            //links "http://docs.oracle.com/javase/7/docs/api"
+        }
+    }
+
+    artifacts {
+        archives jar
+        archives javadocJar
+        archives sourcesJar
+    }
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "http://121.43.169.171:8081/nexus/content/groups/public/" }
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.4' //sonarqube
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+
+    }
+}
+apply plugin: 'org.sonarqube'
+sonarqube {
+    properties {
+        property "sonar.projectName", "huiguan-commons-java"
+        property "sonar.projectKey", "com.huiguan:commons-java"
+        property "sonar.host.url", "http://121.43.169.171:9000/"
+        property "sonar.login", "admin"
+        property "sonar.password", "admin"
+        property "sonar.sourceEncoding", "utf-8"
+    }
+}
+
+subprojects {
+
+    apply plugin: "io.spring.dependency-management"
+    //sourceCompatibility = 1.7
+    //targetCompatibility = 1.7
+
+
+    dependencyManagement {
+        dependencies {
+
+            imports {
+                mavenBom 'org.springframework.boot:spring-boot-dependencies:1.5.3.RELEASE'
+            }
+
+            imports {
+                mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.RELEASE'
+            }
+
+
+            dependencySet(group: 'org.springframework.boot', version: '1.5.3.RELEASE') {
+                entry 'spring-boot-starter'
+                entry 'spring-boot-starter-web'
+                entry 'spring-boot-starter-jdbc'
+                entry 'spring-boot-starter-actuator'
+                entry 'spring-boot-starter-logging'
+                entry 'spring-boot-starter-test'
+
+            }
+
+            dependencySet(group: 'org.springframework', version: '4.3.8.RELEASE') {
+                entry 'spring-core'
+                entry 'spring-expression'
+                entry 'spring-beans'
+                entry 'spring-aop'
+                entry 'spring-context'
+                entry 'spring-context-support'
+                entry 'spring-tx'
+                entry 'spring-jdbc'
+                entry 'spring-orm'
+                entry 'spring-oxm'
+                entry 'spring-web'
+                entry 'spring-webmvc'
+                entry 'spring-webmvc-portlet'
+                entry 'spring-test'
+            }
+
+
+
+            dependency('org.apache.zookeeper:zookeeper:3.4.8') {
+                exclude 'log4j:log4j'
+            }
+            dependency('com.github.sgroschupf:zkclient:0.1') {
+                exclude 'log4j:log4j'
+            }
+
+            dependency 'com.alibaba:fastjson:1.2.6'
+            dependency 'com.alibaba:druid:1.0.20'
+            //dependency('com.alibaba:dubbo:2.5.3') {
+            dependency('com.alibaba:dubbo:2.5.3') {//此项从nexus拉取,dubbox 需要依赖web
+                exclude 'org.springframework:spring'
+            }
+
+            dependency 'javax.activation:activation:1.1.1'
+            dependency 'org.antlr:antlr:3.4'
+            dependency 'aopalliance:aopalliance:1.0'
+            dependency 'bsh:bsh:2.0b1'
+            dependency 'cglib:cglib:2.2.2'
+            dependency('com.101tec:zkclient:0.10') {
+                exclude 'log4j:log4j'
+                exclude 'org.slf4j:slf4j-api'
+                exclude 'org.slf4j:slf4j-log4j12'
+            }
+
+            dependency 'commons-beanutils:commons-beanutils:1.9.3'
+            dependency 'commons-cli:commons-cli:1.2'
+            dependency 'commons-codec:commons-codec:1.6'
+            dependency 'commons-collections:commons-collections:3.2'
+            //dependency 'commons-dbcp:commons-dbcp:1.4'
+            dependency 'org.apache.commons:commons-dbcp2:2.1.1'
+            dependency 'commons-io:commons-io:2.4'
+            dependency 'commons-lang:commons-lang:2.6'
+            dependency 'commons-pool:commons-pool:1.6'
+            dependency 'commons-logging:commons-logging:1.1.2'
+            dependency 'org.apache.commons:commons-collections4:4.1'
+            dependency 'org.apache.commons:commons-lang3:3.4'
+            dependency 'org.slf4j:log4j-over-slf4j:1.7.5'
+            dependency 'org.slf4j:slf4j-api:1.7.5'
+
+            dependency 'mysql:mysql-connector-java:5.1.9'
+            dependency 'org.opensymphony.quartz:quartz:1.6.1'
+            dependency 'joda-time:joda-time:2.9.3'
+            dependency 'com.googlecode.xmemcached:xmemcached:1.4.3'
+            dependency 'c3p0:c3p0:0.9.1.2'
+
+            dependency 'javax.servlet:javax.servlet-api:3.1.0'
+            dependency 'org.aspectj:aspectjrt:1.8.9'
+            dependency 'org.aspectj:aspectjweaver:1.8.9'
+            dependency 'ch.qos.logback:logback-core:1.1.11'
+            dependency 'ch.qos.logback:logback-classic:1.1.11'
+
+            dependency 'org.mybatis:mybatis:3.4.4'
+            dependency 'org.mybatis:mybatis-spring:1.3.1'
+            dependency 'org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0'
+            dependency 'org.apache.velocity:velocity:1.7'
+            dependency 'org.apache.velocity:velocity-tools:2.0'
+            dependency 'com.google.guava:guava:19.0'
+            dependency 'redis.clients:jedis:2.9.0'
+            dependency 'com.baidu.disconf:disconf-client:2.6.33'
+            dependency 'org.javassist:javassist:3.21.0-GA'
+            dependency 'asm:asm-all:3.3.1'
+            dependency 'com.dangdang:elastic-job-core:1.0.6'
+            dependency 'com.dangdang:elastic-job-spring:1.0.6'
+            dependency 'javax.validation:validation-api:1.1.0.Final'
+            dependency 'org.hibernate:hibernate-validator:5.3.5.Final'
+            dependencySet(group: 'org.jboss.resteasy', version: '3.0.7.Final') {
+                entry 'resteasy-jaxrs'
+                entry 'resteasy-client'
+                entry 'resteasy-jackson-provider'
+                entry 'resteasy-netty'
+            }
+            dependency 'org.jboss.logging:jboss-logging:3.3.0.Final'
+            dependency 'org.apache.kafka:kafka-clients:0.9.0.1'
+            dependency 'org.projectlombok:lombok:1.16.16'
+            dependency 'org.javatuples:javatuples:1.2'
+            dependency 'com.alibaba:fastjson:1.2.32'
+            dependency 'com.aliyun.openservices:ons-client:1.6.0.Final'
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+

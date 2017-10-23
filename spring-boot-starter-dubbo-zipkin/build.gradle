@@ -1,0 +1,24 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'spring-boot-starter-dubbo-zipkin'
+
+dependencies {
+
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
+    //compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+    compile('com.alibaba:dubbo')
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+
+
+    compile('com.google.guava:guava')
+    compile('org.projectlombok:lombok')
+    compile ('com.alibaba:fastjson')
+    compile project (':huiguan-commons')
+    //compile ('com.huiguan:huiguan-commons:1.0.0-SNAPSHOT')
+    compile ('commons-lang:commons-lang')
+
+
+
+}

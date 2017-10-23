@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.huiguan.boot.global.lock.GlobalLockAutoConfiguration,\
+com.huiguan.boot.global.lock.redisson.RedissonGlobalLockAutoConfiguration

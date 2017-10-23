@@ -1,0 +1,2 @@
+spanConsumer=com.huiguan.boot.starter.dubbozipkin.ConsumerSpanFilter
+spanProvider=com.huiguan.boot.starter.dubbozipkin.ProviderSpanFilter

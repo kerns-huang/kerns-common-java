@@ -1,0 +1,14 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'spring-boot-starter-dubbo'
+
+dependencies {
+
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('com.alibaba:dubbo')
+    compile('com.101tec:zkclient')
+    compile('com.google.guava:guava')
+    compile('org.projectlombok:lombok')
+
+}

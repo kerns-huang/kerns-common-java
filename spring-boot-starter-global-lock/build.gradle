@@ -1,0 +1,13 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'spring-boot-starter-global-lock'
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('com.101tec:zkclient')
+    compile('com.google.guava:guava')
+    compile('org.projectlombok:lombok')
+    compile("org.redisson:redisson:3.4.4")
+
+}

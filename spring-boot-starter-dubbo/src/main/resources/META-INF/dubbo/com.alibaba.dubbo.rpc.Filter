@@ -1,0 +1,2 @@
+dubboconsumerstatics=com.huiguan.boot.dubbo.listener.ConsumerInvokeStaticsFilter
+dubboproviderstatics=com.huiguan.boot.dubbo.listener.ProviderInvokeStaticsFilter

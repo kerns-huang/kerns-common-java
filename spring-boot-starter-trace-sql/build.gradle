@@ -1,0 +1,15 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'spring-boot-starter-trace-sql'
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('com.google.guava:guava')
+    compile('org.projectlombok:lombok')
+    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter')
+
+    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+
+    compile('commons-lang:commons-lang')
+}

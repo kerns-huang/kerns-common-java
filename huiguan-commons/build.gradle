@@ -1,0 +1,14 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'huiguan-commons'
+
+dependencies {
+    compile('com.google.guava:guava:19.0')
+    compile('org.projectlombok:lombok')
+    compile('com.alibaba:fastjson')
+    compile ('com.fasterxml.jackson.core:jackson-core:2.8.8')
+    compile ('com.fasterxml.jackson.core:jackson-databind:2.8.8')
+    compile ('com.fasterxml.jackson.core:jackson-annotations:2.8.0')
+    compile ('org.apache.curator:curator-recipes:2.11.1')
+    
+}

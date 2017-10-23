@@ -1,0 +1,11 @@
+version '1.0.0-SNAPSHOT'
+
+description = 'spring-boot-starter-ons'
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('com.google.guava:guava')
+    compile('org.projectlombok:lombok')
+    compile('com.aliyun.openservices:ons-client')
+}
