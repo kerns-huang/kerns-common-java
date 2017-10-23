@@ -41,50 +41,49 @@ allprojects {
             dependsOn = [];
         }
     }
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-
-                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/snapshots/") {
-                    authentication(userName: "admin", password: "admin123")
-                }
-                //发布前禁止更新releases版本
-/*
-                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/releases/") {
-                    authentication(userName: "admin", password: "admin123")
-                }*/
-
-
-                pom.project {
-                    name project.name
-                    packaging 'jar'
-                    description 'kerns-commons'
-                    url 'http://www.huiguan.com'
-
-                    scm {
-                        url ''
-                        connection ''
-                        developerConnection ''
-                    }
-
-                    licenses {
-                        license {
-                            name 'No License'
-                            url 'http://www.huiguan.com'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'juyongcheng'
-                            name 'Yongcheng Ju'
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    uploadArchives {
+//        repositories {
+//            mavenDeployer {
+//                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/snapshots/") {
+//                    authentication(userName: "admin", password: "admin123")
+//                }
+//                //发布前禁止更新releases版本
+///*
+//                repository(url: "http://121.43.169.171:8081/nexus/content/repositories/releases/") {
+//                    authentication(userName: "admin", password: "admin123")
+//                }*/
+//
+//
+//                pom.project {
+//                    name project.name
+//                    packaging 'jar'
+//                    description 'kerns-commons'
+//                    url 'http://www.huiguan.com'
+//
+//                    scm {
+//                        url ''
+//                        connection ''
+//                        developerConnection ''
+//                    }
+//
+//                    licenses {
+//                        license {
+//                            name 'No License'
+//                            url 'http://www.huiguan.com'
+//                            distribution 'repo'
+//                        }
+//                    }
+//
+//                    developers {
+//                        developer {
+//                            id 'juyongcheng'
+//                            name 'Yongcheng Ju'
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
