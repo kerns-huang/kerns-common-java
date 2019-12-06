@@ -1,11 +1,9 @@
 package com.xd.swagger;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import java.util.ArrayList;
 import java.util.List;
 @Data
-@EnableConfigurationProperties
 public class SwaggerProperties {
     /**
      * 标题
