@@ -13,6 +13,7 @@
         <module>xd-spring-boot-amqp-starter</module>
         <module>xd-spring-boot-redis-starter</module>
         <module>xd-spring-boot-jpa-starter</module>
+        <module>xd-spring-boot-swagger-starter</module>
     </modules>
     <parent>
         <groupId>com.xd</groupId>
