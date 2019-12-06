@@ -1,5 +1,6 @@
 package com.xd.web.exception;
 
+import com.xd.core.exception.BizException;
 import com.xd.core.web.response.BasicCodeMsg;
 import com.xd.core.web.response.R;
 import com.xd.core.web.response.Result;
@@ -44,6 +45,10 @@ public class ExceptionHandlerController {
                 }
             }
             return R.fail(BasicCodeMsg.PARAM_ERROR);
+        }else if(re instanceof BizException){
+            BizException biz=(BizException)re;
+            log.info("biz exception biz code={},msg={}",biz.getCode(),biz.getCodeMsg().getMsg());
+            return R.fail(biz.getCodeMsg());
         }
         log.error(" request param type error, requestUrl: {},header:{} parameters:{} msg={}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage(), re);
         return R.fail(BasicCodeMsg.PARAM_ERROR);
