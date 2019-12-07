@@ -2,8 +2,8 @@ package com.xd.web.exception;
 
 import com.xd.core.exception.BizException;
 import com.xd.core.web.response.BasicCodeMsg;
-import com.xd.core.web.response.R;
 import com.xd.core.web.response.Result;
+import com.xd.core.web.response.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -29,11 +29,11 @@ public class ExceptionHandlerController {
         String requestUrl = request.getRequestURI();
         if (re instanceof MissingServletRequestParameterException) {
             log.error(" miss request param requestUrl: {} ,header:{} parameters:{}  msg={}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage());
-            return R.fail(BasicCodeMsg.PARAM_ERROR);
+            return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
         } else if (re instanceof MethodArgumentTypeMismatchException) {
             MethodArgumentTypeMismatchException ex = (MethodArgumentTypeMismatchException) re;
             log.error(" request param error requestUrl: {} ,header:{} parameters:{} error param='{}' {}", requestUrl, getHeadersStr(request), getParamStr(request), ex.getName(), re.getMessage());
-            return R.fail(BasicCodeMsg.PARAM_ERROR);
+            return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
         }else if(re instanceof MethodArgumentNotValidException){
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) re;
             log.error(" request param error requestUrl: {} ,header:{} parameters:{} error param='{}' {}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage());
@@ -41,17 +41,17 @@ public class ExceptionHandlerController {
             if(bindingResult!=null&&bindingResult.hasErrors()){
                 List<FieldError> fieldErrors=bindingResult.getFieldErrors();
                 if(!CollectionUtils.isEmpty(fieldErrors)){
-                    return R.fail(fieldErrors.get(0).getDefaultMessage());
+                    return ResultUtils.fail(fieldErrors.get(0).getDefaultMessage());
                 }
             }
-            return R.fail(BasicCodeMsg.PARAM_ERROR);
+            return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
         }else if(re instanceof BizException){
             BizException biz=(BizException)re;
             log.info("biz exception biz code={},msg={}",biz.getCode(),biz.getCodeMsg().getMsg());
-            return R.fail(biz.getCodeMsg());
+            return ResultUtils.fail(biz.getCodeMsg());
         }
         log.error(" request param type error, requestUrl: {},header:{} parameters:{} msg={}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage(), re);
-        return R.fail(BasicCodeMsg.PARAM_ERROR);
+        return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
     }
 
     private String getHeadersStr(HttpServletRequest request) {
