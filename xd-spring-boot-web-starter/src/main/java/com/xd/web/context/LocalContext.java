@@ -15,7 +15,7 @@ public class LocalContext {
 
     public static Locale get(){
         if(threadLocal.get()==null){
-            return Locale.ENGLISH;
+            return Locale.US;
         }else{
             return threadLocal.get();
         }

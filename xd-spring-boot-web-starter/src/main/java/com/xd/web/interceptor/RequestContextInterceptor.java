@@ -1,8 +1,10 @@
 package com.xd.web.interceptor;
 
+import com.xd.core.util.StringUtils;
 import com.xd.core.web.context.RequestContext;
+import com.xd.web.context.LocalContext;
+import com.xd.web.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ public class RequestContextInterceptor implements HandlerInterceptor {
             return false;
         }
         RequestContext.setPlatform(Integer.valueOf(platform));
+        LocalContext.set(WebUtil.getLocale(request));
         return true;
     }
 }
