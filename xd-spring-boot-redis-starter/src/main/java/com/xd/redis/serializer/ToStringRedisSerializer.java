@@ -3,6 +3,7 @@ package com.xd.redis.serializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -16,6 +17,10 @@ public class ToStringRedisSerializer implements RedisSerializer<Object> {
 
     @Override
     public Object deserialize(byte[] bytes) throws SerializationException {
-        throw new UnsupportedOperationException("不支持的操作");
+        if (bytes == null) {
+            return null;
+        }
+        String string = new String(bytes, StandardCharsets.UTF_8);
+        return string;
     }
 }
