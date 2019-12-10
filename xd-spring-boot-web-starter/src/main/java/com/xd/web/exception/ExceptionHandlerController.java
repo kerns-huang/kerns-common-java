@@ -13,13 +13,18 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.List;
 
 
-@ControllerAdvice
+/**
+ * @author heige
+ */
+@RestControllerAdvice
 @Slf4j
 public class ExceptionHandlerController {
 
@@ -34,20 +39,20 @@ public class ExceptionHandlerController {
             MethodArgumentTypeMismatchException ex = (MethodArgumentTypeMismatchException) re;
             log.error(" request param error requestUrl: {} ,header:{} parameters:{} error param='{}' {}", requestUrl, getHeadersStr(request), getParamStr(request), ex.getName(), re.getMessage());
             return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
-        }else if(re instanceof MethodArgumentNotValidException){
+        } else if (re instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) re;
             log.error(" request param error requestUrl: {} ,header:{} parameters:{} error param='{}' {}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage());
-            BindingResult bindingResult=ex.getBindingResult();
-            if(bindingResult!=null&&bindingResult.hasErrors()){
-                List<FieldError> fieldErrors=bindingResult.getFieldErrors();
-                if(!CollectionUtils.isEmpty(fieldErrors)){
+            BindingResult bindingResult = ex.getBindingResult();
+            if (bindingResult != null && bindingResult.hasErrors()) {
+                List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+                if (!CollectionUtils.isEmpty(fieldErrors)) {
                     return ResultUtils.fail(fieldErrors.get(0).getDefaultMessage());
                 }
             }
             return ResultUtils.fail(BasicCodeMsg.PARAM_ERROR);
-        }else if(re instanceof BizException){
-            BizException biz=(BizException)re;
-            log.info("biz exception biz code={},msg={}",biz.getCode(),biz.getCodeMsg().getMsg());
+        } else if (re instanceof BizException) {
+            BizException biz = (BizException) re;
+            log.info("biz exception biz code={},msg={}", biz.getCode(), biz.getCodeMsg().getMsg());
             return ResultUtils.fail(biz.getCodeMsg());
         }
         log.error(" request param type error, requestUrl: {},header:{} parameters:{} msg={}", requestUrl, getHeadersStr(request), getParamStr(request), re.getMessage(), re);
