@@ -2,7 +2,7 @@ package com.xd.system;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.math.BigDecimal;
 
@@ -13,10 +13,10 @@ import java.math.BigDecimal;
  * @create 2019-12-10 下午5:54
  **/
 @Data
-@Configuration
 @ConfigurationProperties(prefix="system")
-public class SystemProperties {
-    private SystemProperties.Limit limit;
+public class XdSystemProperties {
+    @NestedConfigurationProperty
+    private XdSystemProperties.Limit limit;
     @Data
     public static class Limit {
         private BigDecimal videoFeeMin;

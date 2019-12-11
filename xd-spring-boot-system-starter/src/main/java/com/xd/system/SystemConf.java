@@ -10,6 +10,6 @@ import org.springframework.context.annotation.Configuration;
  * @create 2019-12-11 上午9:59
  **/
 @Configuration
-@EnableConfigurationProperties(SystemProperties.class)
+@EnableConfigurationProperties(XdSystemProperties.class)
 public class SystemConf {
 }
