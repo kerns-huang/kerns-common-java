@@ -19,6 +19,7 @@
         <module>xd-spring-boot-redis-starter</module>
         <module>xd-spring-boot-jpa-starter</module>
         <module>xd-spring-boot-swagger-starter</module>
+        <module>xd-spring-boot-system-starter</module>
     </modules>
     <dependencies>
         <dependency>
@@ -28,6 +29,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
