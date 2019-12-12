@@ -16,9 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class RequestContextInterceptor implements HandlerInterceptor {
 
+    public static final String CLIENT = "client";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        String path= request.getPathInfo();
+        if(!StringUtils.contains(path,CLIENT)){
+            return  true;
+        }
         String uid = request.getHeader("uid");
         if (!StringUtils.isEmpty(uid)) {
             RequestContext.setUid(Integer.parseInt(uid));
