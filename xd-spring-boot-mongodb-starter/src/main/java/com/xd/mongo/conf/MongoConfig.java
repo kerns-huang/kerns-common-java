@@ -1,6 +1,7 @@
 package com.xd.mongo.conf;
 
 import com.xd.mongo.convert.BigDecimalConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.GenericConverter;
@@ -22,6 +23,7 @@ import java.util.List;
 public class MongoConfig {
 
     @Bean
+    @ConditionalOnBean(EnableTransactionManagement.class)
     MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
