@@ -25,16 +25,16 @@ import java.util.stream.Collectors;
  * spring.redis.lettuce.shutdown-timeout=100ms
  */
 @Component
-public class CacheAdapter {
+public class CacheAdapter<T> {
     @Autowired
-    private RedisTemplate<String, Object> template;
-    public void setValue(String key,Object value) {
+    private RedisTemplate<String, T> template;
+    public void setValue(String key,T value) {
         template.opsForValue().set(key,value);
     }
-    public void setValue(String key,Object value, long timeOut) {
+    public void setValue(String key,T value, long timeOut) {
         template.opsForValue().set(key,value,timeOut);
     }
-    public void setValue(String key, Object value, long timeOut, TimeUnit timeUnit) {
+    public void setValue(String key, T value, long timeOut, TimeUnit timeUnit) {
         template.opsForValue().set(key,value,timeOut,timeUnit );
     }
     public void getValue(String key){
@@ -47,7 +47,7 @@ public class CacheAdapter {
      * @param score
      * @param value
      */
-    public void zAdd(String key,Double score,Object value){
+    public  void zAdd(String key,Double score,T value){
         template.opsForZSet().add(key,value,score);
     }
 
@@ -58,8 +58,8 @@ public class CacheAdapter {
      * @param end
      * @return
      */
-    public List<Object> zRevRange(String key,Long start,Long end){
-        Set<ZSetOperations.TypedTuple<Object>> set= template.opsForZSet().rangeWithScores(key,start,end);
+    public  List<T> zRevRange(String key,Long start,Long end){
+        Set<ZSetOperations.TypedTuple<T>> set= template.opsForZSet().rangeWithScores(key,start,end);
         return set.stream().map(a->a.getValue()).collect(Collectors.toList());
     }
 
