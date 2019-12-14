@@ -47,8 +47,8 @@ public class CacheAdapter<T> {
      * @param score
      * @param value
      */
-    public  void zAdd(String key,Double score,T value){
-        template.opsForZSet().add(key,value,score);
+    public  Boolean zAdd(String key,Double score,T value){
+        return template.opsForZSet().add(key,value,score);
     }
 
     /**
@@ -61,6 +61,16 @@ public class CacheAdapter<T> {
     public  List<T> zRevRange(String key,Long start,Long end){
         Set<ZSetOperations.TypedTuple<T>> set= template.opsForZSet().rangeWithScores(key,start,end);
         return set.stream().map(a->a.getValue()).collect(Collectors.toList());
+    }
+
+
+    public Long sAdd(String key,T... values){
+        return template.opsForSet().add(key,values);
+    }
+
+
+    public Set<T> sMembers(String key){
+        return template.opsForSet().members(key);
     }
 
 
