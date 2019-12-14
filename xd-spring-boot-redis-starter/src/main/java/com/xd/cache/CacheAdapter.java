@@ -2,9 +2,14 @@ package com.xd.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 緩存適配器。當前使用的是SpringDate的RedisTemplate
@@ -22,24 +27,42 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheAdapter {
     @Autowired
-    private RedisTemplate<String, String> template;
-
-    public void setValue(String key,String value) {
+    private RedisTemplate<String, Object> template;
+    public void setValue(String key,Object value) {
         template.opsForValue().set(key,value);
     }
-    public void setValue(String key,String value, long timeOut) {
+    public void setValue(String key,Object value, long timeOut) {
         template.opsForValue().set(key,value,timeOut);
     }
-    public void setValue(String key, String value, long timeOut, TimeUnit timeUnit) {
+    public void setValue(String key, Object value, long timeOut, TimeUnit timeUnit) {
         template.opsForValue().set(key,value,timeOut,timeUnit );
     }
     public void getValue(String key){
         template.opsForValue().get(key);
     }
-//    public void setSet(String key,String... values){
-//        template.opsForSet().add(key,values);
-//    }
-//    public void getSet(String key){
-//        template.opsForSet().difference(key,key);
-//    }
+
+    /**
+     * 添加zset 数据
+     * @param key
+     * @param score
+     * @param value
+     */
+    public void zAdd(String key,Double score,Object value){
+        template.opsForZSet().add(key,value,score);
+    }
+
+    /**
+     * 按照分数获取数据
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public List<Object> zRevRange(String key,Long start,Long end){
+        Set<ZSetOperations.TypedTuple<Object>> set= template.opsForZSet().rangeWithScores(key,start,end);
+        return set.stream().map(a->a.getValue()).collect(Collectors.toList());
+    }
+
+
+
 }
