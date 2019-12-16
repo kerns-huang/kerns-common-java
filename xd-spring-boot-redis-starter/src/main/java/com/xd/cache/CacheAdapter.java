@@ -2,16 +2,19 @@ package com.xd.cache;
 
 import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
+ * @author watt
  * 緩存適配器。當前使用的是SpringDate的RedisTemplate
  * 在springboot啟動項目中，請配置如下：
  * spring.redis.database=0
