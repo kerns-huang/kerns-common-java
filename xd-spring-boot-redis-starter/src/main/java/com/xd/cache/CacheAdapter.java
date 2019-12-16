@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,19 +33,35 @@ public class CacheAdapter<T> {
     @Autowired
     private RedisTemplate<String, T> template;
 
+    /**
+     * 设置key 和value
+     * @param key
+     * @param value
+     */
     public void setValue(String key, T value) {
         template.opsForValue().set(key, value);
     }
 
+    /**
+     * 设置值和过期时间
+     * @param key
+     * @param value
+     * @param timeOut 以秒为单位，过期时间
+     */
     public void setValue(String key, T value, long timeOut) {
-        template.opsForValue().set(key, value, timeOut);
+        template.opsForValue().set(key, value, Duration.ofSeconds(timeOut));
     }
-
+    /**
+     * 设置值和过期时间
+     * @param key
+     * @param value
+     * @param timeOut 以秒为单位，过期时间
+     */
     public void setValue(String key, T value, long timeOut, TimeUnit timeUnit) {
         template.opsForValue().set(key, value, timeOut, timeUnit);
     }
 
-    public void getValue(String key) {
+    public T getValue(String key) {
         template.opsForValue().get(key);
     }
 
@@ -94,6 +111,10 @@ public class CacheAdapter<T> {
 
     public void update(String key, UpdateWrapper wrapper){
         template.opsForHash().putAll(key,wrapper.getCacheMap());
+    }
+
+    public void expire(String key,Long timeOut){
+        template.expire(key,timeOut,TimeUnit.SECONDS);
     }
     /**
      * 获取key的交集，生成新的集合
