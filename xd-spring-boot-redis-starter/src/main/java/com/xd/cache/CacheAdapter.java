@@ -89,7 +89,7 @@ public class CacheAdapter<T> {
         template.opsForHash().putAll(key,map);
     }
 
-    public void hMSet(String key, UpdateWrapper<T> wrapper){
+    public void update(String key, UpdateWrapper wrapper){
         template.opsForHash().putAll(key,wrapper.getCacheMap());
     }
     /**
