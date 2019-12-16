@@ -1,5 +1,6 @@
 package com.xd.cache;
 
+import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -86,6 +87,10 @@ public class CacheAdapter<T> {
 
     public void hMSet(String key,Map map){
         template.opsForHash().putAll(key,map);
+    }
+
+    public void hMSet(String key, UpdateWrapper<T> wrapper){
+        template.opsForHash().putAll(key,wrapper.getCacheMap());
     }
     /**
      * 获取key的交集，生成新的集合
