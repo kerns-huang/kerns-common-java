@@ -1,11 +1,15 @@
 package com.xd.cache;
 
+import com.xd.core.lamda.LamdaUtil;
+import com.xd.core.lamda.QueryWrapper;
 import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +36,9 @@ import java.util.stream.Collectors;
 public class CacheAdapter<T> {
     @Autowired
     private RedisTemplate<String, T> template;
+
+    @Resource(name = "toStringRedisTemplate")
+    private RedisTemplate toStringRedisTemplate;
 
     /**
      * 设置key 和value
@@ -127,8 +134,16 @@ public class CacheAdapter<T> {
         template.opsForHash().putAll(key,map);
     }
 
+    public <O> O hMget(String key, QueryWrapper<O> wrapper){
+        List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
+        List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
+        Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
+        BeanMap beanMap = BeanMap.create(wrapper.getO());
+        beanMap.putAll(map);
+        return wrapper.getO();
+    }
 
-    public void update(String key, UpdateWrapper wrapper){
+    public void hMSet(String key, UpdateWrapper wrapper){
         template.opsForHash().putAll(key,wrapper.getCacheMap());
     }
 
