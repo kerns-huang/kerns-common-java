@@ -104,10 +104,21 @@ public class CacheAdapter<T> {
         return template.opsForSet().members(key);
     }
 
+    /**
+     * 判断是否是set成员
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean sIsMembers(String key,T value){
+        return template.opsForSet().isMember(key,value);
+    }
+
 
     public void hMSet(String key,Map map){
         template.opsForHash().putAll(key,map);
     }
+
 
     public void update(String key, UpdateWrapper wrapper){
         template.opsForHash().putAll(key,wrapper.getCacheMap());
