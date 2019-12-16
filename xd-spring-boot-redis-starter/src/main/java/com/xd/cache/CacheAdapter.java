@@ -68,7 +68,12 @@ public class CacheAdapter<T> {
         return set.stream().map(a -> a.getValue()).collect(Collectors.toList());
     }
 
-
+    /**
+     * 添加value到set集合里面
+     * @param key
+     * @param values
+     * @return
+     */
     public Long sAdd(String key, T... values) {
         return template.opsForSet().add(key, values);
     }
@@ -78,6 +83,10 @@ public class CacheAdapter<T> {
         return template.opsForSet().members(key);
     }
 
+
+    public void hMSet(String key,Map map){
+        template.opsForHash().putAll(key,map);
+    }
     /**
      * 获取key的交集，生成新的集合
      *
