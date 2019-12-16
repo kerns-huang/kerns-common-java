@@ -144,7 +144,7 @@ public class CacheAdapter<T> {
     }
 
     public void hMSet(String key, UpdateWrapper wrapper){
-        template.opsForHash().putAll(key,wrapper.getCacheMap());
+        toStringRedisTemplate.opsForHash().putAll(key,wrapper.getCacheMap());
     }
 
     public void expire(String key,Long timeOut){
