@@ -105,6 +105,14 @@ public class CacheAdapter<T> {
     }
 
     /**
+     * 判断key是否存在
+     * @param key
+     * @return
+     */
+    public boolean exists(String key){
+        return template.hasKey(key);
+    }
+    /**
      * 判断是否是set成员
      * @param key
      * @param value
