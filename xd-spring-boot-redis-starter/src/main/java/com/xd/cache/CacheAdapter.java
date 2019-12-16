@@ -62,7 +62,7 @@ public class CacheAdapter<T> {
     }
 
     public T getValue(String key) {
-        template.opsForValue().get(key);
+       return template.opsForValue().get(key);
     }
 
     /**
