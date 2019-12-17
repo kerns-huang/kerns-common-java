@@ -1,8 +1,12 @@
 package com.xd.cache;
 
+import com.xd.annotations.cache.CacheMapKey;
 import com.xd.core.lamda.LamdaUtil;
+import com.xd.core.lamda.PropertyNamer;
 import com.xd.core.lamda.QueryWrapper;
 import com.xd.core.lamda.UpdateWrapper;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,6 +14,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -97,8 +102,8 @@ public class CacheAdapter<T> {
         return set.stream().collect(Collectors.toList());
     }
 
-    public Set<T> zRangeByScore(String key,double minScore,double maxScore,long offset,long count){
-       return template.opsForZSet().rangeByScore(key,minScore,maxScore,offset,count);
+    public Set<T> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
+        return template.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
 
     /**
@@ -145,15 +150,27 @@ public class CacheAdapter<T> {
 
     public <O> O hMget(String key, QueryWrapper<O> wrapper) {
         if (toStringRedisTemplate.hasKey(key)) {
-            List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
-            List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
-            Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
-            BeanMap beanMap = BeanMap.create(wrapper.getO());
-            beanMap.putAll(map);
-            return wrapper.getO();
+            if (wrapper.isAll()) {
+                Map<String, String> map= toStringRedisTemplate.opsForHash().entries(key);
+                Field[] fields= wrapper.getO().getClass().getFields();
+                for(Field field:fields){
+                    LamdaUtil.fillValue(field,cacheMapKey==null? PropertyNamer.camelToUnderline(field.getName()))
+                }
+            } else {
+                List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
+                List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
+                Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
+                BeanMap beanMap = BeanMap.create(wrapper.getO());
+                beanMap.putAll(map);
+                return wrapper.getO();
+            }
         } else {
             return null;
         }
+    }
+
+    public Double hIncrByDouble(String key,String hashKey,double value){
+        return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
     }
 
     public void hMSet(String key, UpdateWrapper wrapper) {

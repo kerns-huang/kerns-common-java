@@ -1,7 +1,6 @@
 package com.xd.web.context;
 
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * 语言信息上下文
