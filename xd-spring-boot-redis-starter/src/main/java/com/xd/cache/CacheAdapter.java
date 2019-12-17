@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -149,6 +146,10 @@ public class CacheAdapter<T> {
 
     public void expire(String key,Long timeOut){
         template.expire(key,timeOut,TimeUnit.SECONDS);
+    }
+
+    public Boolean expireAt(String key, Date date){
+       return  template.expireAt(key,date);
     }
 
     public Long incr(String key){
