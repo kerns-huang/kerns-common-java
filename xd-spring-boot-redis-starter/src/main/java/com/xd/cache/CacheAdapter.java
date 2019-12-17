@@ -150,20 +150,12 @@ public class CacheAdapter<T> {
 
     public <O> O hMget(String key, QueryWrapper<O> wrapper) {
         if (toStringRedisTemplate.hasKey(key)) {
-            if (wrapper.isAll()) {
-                Map<String, String> map= toStringRedisTemplate.opsForHash().entries(key);
-                Field[] fields= wrapper.getO().getClass().getFields();
-                for(Field field:fields){
-                    LamdaUtil.fillValue(field,cacheMapKey==null? PropertyNamer.camelToUnderline(field.getName()))
-                }
-            } else {
                 List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
                 List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
                 Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
                 BeanMap beanMap = BeanMap.create(wrapper.getO());
                 beanMap.putAll(map);
                 return wrapper.getO();
-            }
         } else {
             return null;
         }
