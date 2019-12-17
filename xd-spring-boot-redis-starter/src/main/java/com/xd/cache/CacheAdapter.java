@@ -93,8 +93,12 @@ public class CacheAdapter<T> {
      * @return
      */
     public List<T> zRevRange(String key, Long start, Long end) {
-        Set<ZSetOperations.TypedTuple<T>> set = template.opsForZSet().rangeWithScores(key, start, end);
-        return set.stream().map(a -> a.getValue()).collect(Collectors.toList());
+        Set<T> set = template.opsForZSet().reverseRange(key, start, end);
+        return set.stream().collect(Collectors.toList());
+    }
+
+    public Set<T> zRangeByScore(String key,double minScore,double maxScore,long offset,long count){
+       return template.opsForZSet().rangeByScore(key,minScore,maxScore,offset,count);
     }
 
     /**
