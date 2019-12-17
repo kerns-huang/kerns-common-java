@@ -39,6 +39,7 @@ public class CacheAdapter<T> {
 
     /**
      * 设置key 和value
+     *
      * @param key
      * @param value
      */
@@ -48,6 +49,7 @@ public class CacheAdapter<T> {
 
     /**
      * 设置值和过期时间
+     *
      * @param key
      * @param value
      * @param timeOut 以秒为单位，过期时间
@@ -55,8 +57,10 @@ public class CacheAdapter<T> {
     public void setValue(String key, T value, long timeOut) {
         template.opsForValue().set(key, value, Duration.ofSeconds(timeOut));
     }
+
     /**
      * 设置值和过期时间
+     *
      * @param key
      * @param value
      * @param timeOut 以秒为单位，过期时间
@@ -66,7 +70,7 @@ public class CacheAdapter<T> {
     }
 
     public T getValue(String key) {
-       return template.opsForValue().get(key);
+        return template.opsForValue().get(key);
     }
 
     /**
@@ -95,6 +99,7 @@ public class CacheAdapter<T> {
 
     /**
      * 添加value到set集合里面
+     *
      * @param key
      * @param values
      * @return
@@ -110,51 +115,59 @@ public class CacheAdapter<T> {
 
     /**
      * 判断key是否存在
+     *
      * @param key
      * @return
      */
-    public boolean exists(String key){
+    public boolean exists(String key) {
         return template.hasKey(key);
     }
+
     /**
      * 判断是否是set成员
+     *
      * @param key
      * @param value
      * @return
      */
-    public boolean sIsMembers(String key,T value){
-        return template.opsForSet().isMember(key,value);
+    public boolean sIsMembers(String key, T value) {
+        return template.opsForSet().isMember(key, value);
     }
 
 
-    public void hMSet(String key,Map map){
-        template.opsForHash().putAll(key,map);
+    public void hMSet(String key, Map map) {
+        template.opsForHash().putAll(key, map);
     }
 
-    public <O> O hMget(String key, QueryWrapper<O> wrapper){
-        List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
-        List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
-        Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
-        BeanMap beanMap = BeanMap.create(wrapper.getO());
-        beanMap.putAll(map);
-        return wrapper.getO();
+    public <O> O hMget(String key, QueryWrapper<O> wrapper) {
+        if (toStringRedisTemplate.hasKey(key)) {
+            List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
+            List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
+            Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
+            BeanMap beanMap = BeanMap.create(wrapper.getO());
+            beanMap.putAll(map);
+            return wrapper.getO();
+        } else {
+            return null;
+        }
     }
 
-    public void hMSet(String key, UpdateWrapper wrapper){
-        toStringRedisTemplate.opsForHash().putAll(key,wrapper.getCacheMap());
+    public void hMSet(String key, UpdateWrapper wrapper) {
+        toStringRedisTemplate.opsForHash().putAll(key, wrapper.getCacheMap());
     }
 
-    public void expire(String key,Long timeOut){
-        template.expire(key,timeOut,TimeUnit.SECONDS);
+    public void expire(String key, Long timeOut) {
+        template.expire(key, timeOut, TimeUnit.SECONDS);
     }
 
-    public Boolean expireAt(String key, Date date){
-       return  template.expireAt(key,date);
+    public Boolean expireAt(String key, Date date) {
+        return template.expireAt(key, date);
     }
 
-    public Long incr(String key){
+    public Long incr(String key) {
         return template.opsForValue().increment(key);
     }
+
     /**
      * 获取key的交集，生成新的集合
      *
@@ -167,12 +180,12 @@ public class CacheAdapter<T> {
             return 0L;
         }
         if (keys.size() == 1) {
-            Set<ZSetOperations.TypedTuple<T>> set= template.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
+            Set<ZSetOperations.TypedTuple<T>> set = template.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
             template.opsForZSet().add(newkey, set);
             return Long.valueOf(set.size());
         } else {
-            Set<String> set=new HashSet<>(keys.size()-1);
-            for(int i=1;i<keys.size();i++){
+            Set<String> set = new HashSet<>(keys.size() - 1);
+            for (int i = 1; i < keys.size(); i++) {
                 set.add(keys.get(i));
             }
             return template.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
