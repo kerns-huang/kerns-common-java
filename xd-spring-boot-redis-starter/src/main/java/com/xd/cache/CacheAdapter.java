@@ -150,6 +150,10 @@ public class CacheAdapter<T> {
     public void expire(String key,Long timeOut){
         template.expire(key,timeOut,TimeUnit.SECONDS);
     }
+
+    public Long incr(String key){
+        return template.opsForValue().increment(key);
+    }
     /**
      * 获取key的交集，生成新的集合
      *

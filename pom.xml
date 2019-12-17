@@ -21,6 +21,7 @@
         <module>xd-spring-boot-swagger-starter</module>
         <module>xd-spring-boot-system-starter</module>
         <module>xd-spring-boot-mongodb-starter</module>
+        <module>xd-spring-boot-agora-starter</module>
     </modules>
     <dependencies>
         <dependency>
