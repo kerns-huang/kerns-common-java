@@ -1,10 +1,7 @@
 package com.xd.cache;
 
 import com.xd.annotations.cache.CacheMapKey;
-import com.xd.core.lamda.LamdaUtil;
-import com.xd.core.lamda.PropertyNamer;
-import com.xd.core.lamda.QueryWrapper;
-import com.xd.core.lamda.UpdateWrapper;
+import com.xd.core.lamda.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +159,11 @@ public class CacheAdapter<T> {
     }
 
     public Double hIncrByDouble(String key,String hashKey,double value){
+        return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
+    }
+
+    public <O,L> Double hIncrByDouble(String key, SFunction<O,L> sFunction, double value){
+        String hashKey= LamdaUtil.getCacheKey(sFunction);
         return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
     }
 
