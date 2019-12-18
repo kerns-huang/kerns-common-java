@@ -158,6 +158,14 @@ public class CacheAdapter<T> {
         }
     }
 
+    public Long sRem(String key,T value){
+       return  toStringRedisTemplate.opsForSet().remove(key,value);
+    }
+
+    public Boolean del(String key){
+        return template.delete(key);
+    }
+
     public Double hIncrByDouble(String key,String hashKey,double value){
         return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
     }
