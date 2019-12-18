@@ -21,7 +21,7 @@ public class RequestContextInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        String path= request.getPathInfo();
+        String path = request.getServletPath();
         if(!StringUtils.contains(path,CLIENT)){
             return  true;
         }
