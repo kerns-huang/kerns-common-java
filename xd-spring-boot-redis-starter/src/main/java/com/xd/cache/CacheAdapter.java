@@ -158,10 +158,21 @@ public class CacheAdapter<T> {
         }
     }
 
+    /**
+     * 从 hash set 中删除一个元素
+     * @param key
+     * @param value
+     * @return
+     */
     public Long sRem(String key,T value){
        return  toStringRedisTemplate.opsForSet().remove(key,value);
     }
-
+    /**
+     * 从缓存中删除元素
+     * @param key
+     * @param value
+     * @return
+     */
     public Boolean del(String key){
         return template.delete(key);
     }
