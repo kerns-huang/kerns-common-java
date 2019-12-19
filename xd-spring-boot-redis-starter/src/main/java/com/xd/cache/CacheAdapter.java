@@ -337,7 +337,7 @@ public class CacheAdapter<T> {
             return 0L;
         }
         if (keys.size() == 1) {
-            Set<ZSetOperations.TypedTuple<T>> set = template.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
+            Set<ZSetOperations.TypedTuple<T>> set = toStringRedisTemplate.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
             template.opsForZSet().add(newkey, set);
             return Long.valueOf(set.size());
         } else {
@@ -345,7 +345,7 @@ public class CacheAdapter<T> {
             for (int i = 1; i < keys.size(); i++) {
                 set.add(keys.get(i));
             }
-            return template.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
+            return toStringRedisTemplate.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
         }
     }
 
