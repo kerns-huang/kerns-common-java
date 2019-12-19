@@ -1,9 +1,9 @@
 package com.xd.cache;
 
-import com.xd.annotations.cache.CacheMapKey;
-import com.xd.core.lamda.*;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
+import com.xd.core.lamda.LamdaUtil;
+import com.xd.core.lamda.QueryWrapper;
+import com.xd.core.lamda.SFunction;
+import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +36,7 @@ public class CacheAdapter<T> {
     private RedisTemplate<String, T> template;
 
     @Resource(name = "toStringRedisTemplate")
-    private RedisTemplate<String,String> toStringRedisTemplate;
+    private RedisTemplate toStringRedisTemplate;
 
     /**
      * 设置key 和value
