@@ -234,7 +234,7 @@ public class CacheAdapter<T> {
      * 获取redis hash 的某个值,支持范型
      *
      * @param key
-     * @param hashKey
+     * @param function
      * @return
      */
     public <O, F> F hGet(String key, SFunction<O, F> function) {
