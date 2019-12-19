@@ -209,6 +209,17 @@ public class CacheAdapter<T> {
         toStringRedisTemplate.opsForHash().put(key,hashKey,value);
     }
 
+
+    /**
+     * 添加或者覆盖 hash 的某个值
+     * @param key
+     * @param hashKey
+     * @param value
+     * @param <O>
+     */
+    public <O> void hSet(String key, String hashKey,O value) {
+        toStringRedisTemplate.opsForHash().put(key,hashKey,value);
+    }
     /**
      * 获取redis hash 的某个值,支持范型
      *
