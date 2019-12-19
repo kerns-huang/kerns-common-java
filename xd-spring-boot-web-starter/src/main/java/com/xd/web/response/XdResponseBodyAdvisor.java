@@ -14,6 +14,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 
 /**
@@ -29,7 +30,8 @@ public class XdResponseBodyAdvisor implements ResponseBodyAdvice<Result> {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-        return StringUtils.equals(Result.class.getName(), methodParameter.getGenericParameterType().getClass().getName());
+         ParameterizedTypeImpl parameterizedType=(ParameterizedTypeImpl) methodParameter.getGenericParameterType();
+        return Result.class==parameterizedType.getRawType();
     }
 
     @Override
