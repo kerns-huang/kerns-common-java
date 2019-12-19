@@ -71,6 +71,11 @@ public class CacheAdapter<T> {
         template.opsForValue().set(key, value, timeOut, timeUnit);
     }
 
+    /**
+     * 获取值
+     * @param key
+     * @return
+     */
     public T getValue(String key) {
         return template.opsForValue().get(key);
     }
@@ -99,6 +104,15 @@ public class CacheAdapter<T> {
         return set.stream().collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param key
+     * @param minScore
+     * @param maxScore
+     * @param offset
+     * @param count
+     * @return
+     */
     public Set<T> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
         return template.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
@@ -114,7 +128,11 @@ public class CacheAdapter<T> {
         return template.opsForSet().add(key, values);
     }
 
-
+    /**
+     * 是否是 set 里面的 成员
+     * @param key
+     * @return
+     */
     public Set<T> sMembers(String key) {
         return template.opsForSet().members(key);
     }
@@ -140,11 +158,20 @@ public class CacheAdapter<T> {
         return template.opsForSet().isMember(key, value);
     }
 
-
+    /**
+     * 设置hash 的 kev hashkey value
+     */
     public void hMSet(String key, Map map) {
         template.opsForHash().putAll(key, map);
     }
 
+    /**
+     * 获取hash的多个字段，转换成cache对象
+     * @param key
+     * @param wrapper
+     * @param <O>
+     * @return
+     */
     public <O> O hMget(String key, QueryWrapper<O> wrapper) {
         if (toStringRedisTemplate.hasKey(key)) {
             List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
@@ -169,6 +196,14 @@ public class CacheAdapter<T> {
         return (String) toStringRedisTemplate.opsForHash().get(key, hashKey);
     }
 
+    /**
+     * 添加或者覆盖 hash 的某个值
+     * @param key
+     * @param function
+     * @param value
+     * @param <O>
+     * @param <F>
+     */
     public <O, F> void hSet(String key, SFunction<O, F> function,F value) {
         String hashKey = LamdaUtil.getCacheKey(function);
         toStringRedisTemplate.opsForHash().put(key,hashKey,value);
@@ -214,27 +249,58 @@ public class CacheAdapter<T> {
         return template.delete(key);
     }
 
+    /**
+     * 对hash 里面的某个属性，进行属性操作
+     * @param key
+     * @param hashKey
+     * @param value
+     * @return
+     */
     public Double hIncrByDouble(String key, String hashKey, double value) {
         return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
-
+    /**
+     * 对hash 里面的某个属性，进行属性操作
+     * @param key
+     * @param sFunction
+     * @param value
+     * @return
+     */
     public <O, L> Double hIncrByDouble(String key, SFunction<O, L> sFunction, double value) {
         String hashKey = LamdaUtil.getCacheKey(sFunction);
         return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
-
+    /**
+     * 对hash 里面的多个属性进行更新操作
+     * @param key
+     * @param sFunction
+     * @param value
+     * @return
+     */
     public void hMSet(String key, UpdateWrapper wrapper) {
         toStringRedisTemplate.opsForHash().putAll(key, wrapper.getCacheMap());
     }
 
+    /**
+     * 设置时间超时
+     * @param key
+     * @param timeOut
+     */
     public void expire(String key, Long timeOut) {
         template.expire(key, timeOut, TimeUnit.SECONDS);
     }
-
+    /**
+     * 设置时间超时，在什么时候超时
+     * @param key
+     * @param date
+     */
     public Boolean expireAt(String key, Date date) {
         return template.expireAt(key, date);
     }
-
+    /**
+     * 设置 自增
+     * @param key
+     */
     public Long incr(String key) {
         return template.opsForValue().increment(key);
     }
