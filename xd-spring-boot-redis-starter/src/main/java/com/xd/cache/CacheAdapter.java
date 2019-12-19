@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class CacheAdapter<T> {
-    @Autowired
-    private RedisTemplate<String, T> template;
+    @Resource(name = "redisTemplate")
+    private RedisTemplate<String, T> redisTemplate;
 
     @Resource(name = "toStringRedisTemplate")
     private RedisTemplate toStringRedisTemplate;
@@ -46,7 +46,7 @@ public class CacheAdapter<T> {
      * @param value
      */
     public void setValue(String key, T value) {
-        template.opsForValue().set(key, value);
+        redisTemplate.opsForValue().set(key, value);
     }
 
     /**
@@ -57,7 +57,7 @@ public class CacheAdapter<T> {
      * @param timeOut 以秒为单位，过期时间
      */
     public void setValue(String key, T value, long timeOut) {
-        template.opsForValue().set(key, value, Duration.ofSeconds(timeOut));
+        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(timeOut));
     }
 
     /**
@@ -68,7 +68,7 @@ public class CacheAdapter<T> {
      * @param timeOut 以秒为单位，过期时间
      */
     public void setValue(String key, T value, long timeOut, TimeUnit timeUnit) {
-        template.opsForValue().set(key, value, timeOut, timeUnit);
+        redisTemplate.opsForValue().set(key, value, timeOut, timeUnit);
     }
 
     /**
@@ -77,7 +77,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public T getValue(String key) {
-        return template.opsForValue().get(key);
+        return redisTemplate.opsForValue().get(key);
     }
 
     /**
@@ -266,7 +266,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public Boolean del(String key) {
-        return template.delete(key);
+        return redisTemplate.delete(key);
     }
 
     /**
@@ -307,7 +307,7 @@ public class CacheAdapter<T> {
      * @param timeOut
      */
     public void expire(String key, Long timeOut) {
-        template.expire(key, timeOut, TimeUnit.SECONDS);
+        redisTemplate.expire(key, timeOut, TimeUnit.SECONDS);
     }
     /**
      * 设置时间超时，在什么时候超时
@@ -315,14 +315,14 @@ public class CacheAdapter<T> {
      * @param date
      */
     public Boolean expireAt(String key, Date date) {
-        return template.expireAt(key, date);
+        return redisTemplate.expireAt(key, date);
     }
     /**
      * 设置 自增
      * @param key
      */
     public Long incr(String key) {
-        return template.opsForValue().increment(key);
+        return redisTemplate.opsForValue().increment(key);
     }
 
     /**
@@ -338,7 +338,7 @@ public class CacheAdapter<T> {
         }
         if (keys.size() == 1) {
             Set<ZSetOperations.TypedTuple<T>> set = toStringRedisTemplate.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
-            template.opsForZSet().add(newkey, set);
+            redisTemplate.opsForZSet().add(newkey, set);
             return Long.valueOf(set.size());
         } else {
             Set<String> set = new HashSet<>(keys.size() - 1);
