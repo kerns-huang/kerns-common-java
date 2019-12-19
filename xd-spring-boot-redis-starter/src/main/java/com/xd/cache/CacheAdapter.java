@@ -169,6 +169,11 @@ public class CacheAdapter<T> {
         return (String) toStringRedisTemplate.opsForHash().get(key, hashKey);
     }
 
+    public <O, F> void hSet(String key, SFunction<O, F> function,F value) {
+        String hashKey = LamdaUtil.getCacheKey(function);
+        toStringRedisTemplate.opsForHash().put(key,hashKey,value);
+    }
+
     /**
      * 获取redis hash 的某个值,支持范型
      *
