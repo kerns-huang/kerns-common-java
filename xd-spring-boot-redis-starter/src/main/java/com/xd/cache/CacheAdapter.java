@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -146,12 +147,12 @@ public class CacheAdapter<T> {
 
     public <O> O hMget(String key, QueryWrapper<O> wrapper) {
         if (toStringRedisTemplate.hasKey(key)) {
-                List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
-                List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
-                Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
-                BeanMap beanMap = BeanMap.create(wrapper.getO());
-                beanMap.putAll(map);
-                return wrapper.getO();
+            List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
+            List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
+            Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
+            BeanMap beanMap = BeanMap.create(wrapper.getO());
+            beanMap.putAll(map);
+            return wrapper.getO();
         } else {
             return null;
         }
@@ -159,40 +160,62 @@ public class CacheAdapter<T> {
 
     /**
      * 获取redis hash 的某个值
+     *
      * @param key
      * @param hashKey
      * @return
      */
-    public String hGet(String key,String hashKey){
-        return (String)toStringRedisTemplate.opsForHash().get(key,hashKey);
+    public String hGet(String key, String hashKey) {
+        return (String) toStringRedisTemplate.opsForHash().get(key, hashKey);
+    }
+
+    /**
+     * 获取redis hash 的某个值,支持范型
+     *
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public <O, F> F hGet(String key, SFunction<O, F> function) {
+        Field field = LamdaUtil.getFieldName(function);
+        String hashKey = LamdaUtil.getCacheKey(function);
+        if (!toStringRedisTemplate.opsForHash().hasKey(key, hashKey)) {
+            return null;
+        } else {
+            String value = (String) toStringRedisTemplate.opsForHash().get(key, hashKey);
+            return (F) LamdaUtil.fillValue(field, value);
+        }
     }
 
     /**
      * 从 hash set 中删除一个元素
+     *
      * @param key
      * @param value
      * @return
      */
-    public Long sRem(String key,T value){
-       return  toStringRedisTemplate.opsForSet().remove(key,value);
+    public Long sRem(String key, T value) {
+        return toStringRedisTemplate.opsForSet().remove(key, value);
     }
+
     /**
      * 从缓存中删除元素
+     *
      * @param key
      * @param value
      * @return
      */
-    public Boolean del(String key){
+    public Boolean del(String key) {
         return template.delete(key);
     }
 
-    public Double hIncrByDouble(String key,String hashKey,double value){
-        return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
+    public Double hIncrByDouble(String key, String hashKey, double value) {
+        return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
 
-    public <O,L> Double hIncrByDouble(String key, SFunction<O,L> sFunction, double value){
-        String hashKey= LamdaUtil.getCacheKey(sFunction);
-        return toStringRedisTemplate.opsForHash().increment(key,hashKey,value);
+    public <O, L> Double hIncrByDouble(String key, SFunction<O, L> sFunction, double value) {
+        String hashKey = LamdaUtil.getCacheKey(sFunction);
+        return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
 
     public void hMSet(String key, UpdateWrapper wrapper) {
