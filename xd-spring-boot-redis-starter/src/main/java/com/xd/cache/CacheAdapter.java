@@ -7,6 +7,7 @@ import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
@@ -219,6 +220,15 @@ public class CacheAdapter<T> {
      */
     public <O> void hSet(String key, String hashKey,O value) {
         toStringRedisTemplate.opsForHash().put(key,hashKey,value);
+    }
+
+    /**
+     * 获取hash 的所有，后期观察下，数据量大的情况下的问题
+     * @param key
+     * @return
+     */
+    public List<String> hVals(String key){
+        return  toStringRedisTemplate.opsForHash().values(key);
     }
     /**
      * 获取redis hash 的某个值,支持范型
