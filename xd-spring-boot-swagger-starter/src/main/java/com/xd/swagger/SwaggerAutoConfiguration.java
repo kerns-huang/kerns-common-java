@@ -37,10 +37,10 @@ public class SwaggerAutoConfiguration {
         for (String path : swaggerProperties.getExcludePath()) {
             excludePath.add(PathSelectors.ant(path));
         }
-//        List<Predicate<String>> basePath = new ArrayList<>();
-//        for (String path : swaggerProperties.getBasePath()) {
-//            basePath.add(PathSelectors.ant(path));
-//        }
+        List<Predicate<String>> basePath = new ArrayList<>();
+        for (String path : swaggerProperties.getBasePath()) {
+            basePath.add(PathSelectors.ant(path));
+        }
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo(swaggerProperties)).select()
                 .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))

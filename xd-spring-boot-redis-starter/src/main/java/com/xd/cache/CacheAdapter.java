@@ -37,7 +37,7 @@ public class CacheAdapter<T> {
     private RedisTemplate<String, T> template;
 
     @Resource(name = "toStringRedisTemplate")
-    private RedisTemplate toStringRedisTemplate;
+    private RedisTemplate<String,String> toStringRedisTemplate;
 
     /**
      * 设置key 和value
@@ -156,6 +156,16 @@ public class CacheAdapter<T> {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 获取redis hash 的某个值
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public String hGet(String key,String hashKey){
+        return (String)toStringRedisTemplate.opsForHash().get(key,hashKey);
     }
 
     /**
