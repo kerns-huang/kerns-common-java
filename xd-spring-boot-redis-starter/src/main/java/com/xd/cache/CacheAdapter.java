@@ -7,7 +7,6 @@ import com.xd.core.lamda.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
@@ -89,7 +88,7 @@ public class CacheAdapter<T> {
      * @param value
      */
     public Boolean zAdd(String key, Double score, T value) {
-        return template.opsForZSet().add(key, value, score);
+        return toStringRedisTemplate.opsForZSet().add(key, value, score);
     }
 
     /**
@@ -101,7 +100,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public List<T> zRevRange(String key, Long start, Long end) {
-        Set<T> set = template.opsForZSet().reverseRange(key, start, end);
+        Set<T> set = toStringRedisTemplate.opsForZSet().reverseRange(key, start, end);
         return set.stream().collect(Collectors.toList());
     }
 
@@ -115,7 +114,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public Set<T> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
-        return template.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
+        return toStringRedisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
 
     /**
@@ -126,7 +125,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public Long sAdd(String key, T... values) {
-        return template.opsForSet().add(key, values);
+        return toStringRedisTemplate.opsForSet().add(key, values);
     }
 
     /**
@@ -135,7 +134,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public Set<T> sMembers(String key) {
-        return template.opsForSet().members(key);
+        return toStringRedisTemplate.opsForSet().members(key);
     }
 
     /**
@@ -145,7 +144,7 @@ public class CacheAdapter<T> {
      * @return
      */
     public boolean exists(String key) {
-        return template.hasKey(key);
+        return toStringRedisTemplate.hasKey(key);
     }
 
     /**
@@ -156,14 +155,14 @@ public class CacheAdapter<T> {
      * @return
      */
     public boolean sIsMembers(String key, T value) {
-        return template.opsForSet().isMember(key, value);
+        return toStringRedisTemplate.opsForSet().isMember(key, value);
     }
 
     /**
      * 设置hash 的 kev hashkey value
      */
     public void hMSet(String key, Map map) {
-        template.opsForHash().putAll(key, map);
+        toStringRedisTemplate.opsForHash().putAll(key, map);
     }
 
     /**
