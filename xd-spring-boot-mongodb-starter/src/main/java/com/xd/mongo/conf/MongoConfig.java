@@ -23,7 +23,6 @@ import java.util.List;
 public class MongoConfig {
 
     @Bean
-    @ConditionalOnBean(EnableTransactionManagement.class)
     MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
