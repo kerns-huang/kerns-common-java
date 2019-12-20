@@ -381,5 +381,9 @@ public class CacheAdapter<T> {
         }
     }
 
+    public <O> Double zIncrby(String key,double score,O value){
+       return toStringRedisTemplate.opsForZSet().incrementScore(key,value,score);
+    }
+
 
 }
