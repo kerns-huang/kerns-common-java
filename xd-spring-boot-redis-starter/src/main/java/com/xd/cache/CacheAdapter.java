@@ -1,10 +1,9 @@
 package com.xd.cache;
 
-import com.xd.core.lamda.LamdaUtil;
-import com.xd.core.lamda.QueryWrapper;
-import com.xd.core.lamda.SFunction;
-import com.xd.core.lamda.UpdateWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.xd.core.lambda.LambdaUtil;
+import com.xd.core.lambda.QueryWrapper;
+import com.xd.core.lambda.SFunction;
+import com.xd.core.lambda.UpdateWrapper;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -73,6 +72,7 @@ public class CacheAdapter<T> {
 
     /**
      * 获取值
+     *
      * @param key
      * @return
      */
@@ -105,7 +105,8 @@ public class CacheAdapter<T> {
     }
 
     /**
-     *  按照分数据获取数据
+     * 按照分数据获取数据
+     *
      * @param key
      * @param minScore
      * @param maxScore
@@ -130,6 +131,7 @@ public class CacheAdapter<T> {
 
     /**
      * 是否是 set 里面的 成员
+     *
      * @param key
      * @return
      */
@@ -167,6 +169,7 @@ public class CacheAdapter<T> {
 
     /**
      * 获取hash的多个字段，转换成cache对象
+     *
      * @param key
      * @param wrapper
      * @param <O>
@@ -174,12 +177,27 @@ public class CacheAdapter<T> {
      */
     public <O> O hMget(String key, QueryWrapper<O> wrapper) {
         if (toStringRedisTemplate.hasKey(key)) {
-            List<Object> keys = LamdaUtil.getCacheKeys(wrapper.getFunctions());
-            List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
-            Map<String, Object> map = LamdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
-            BeanMap beanMap = BeanMap.create(wrapper.getO());
-            beanMap.putAll(map);
-            return wrapper.getO();
+            if (wrapper.getFunctions() == null) {
+                Map<Field, String> map1 = LambdaUtil.getClassFieldCacheKeyMap(wrapper.getO().getClass());
+                Map<String, String> map2 = toStringRedisTemplate.opsForHash().entries(key);
+                Map<String, Object> result = new HashMap<>();
+                map1.entrySet().forEach(a -> {
+                    if (map2.containsKey(a.getValue())) {
+                        result.put(a.getKey().getName(), LambdaUtil.fillValue(a.getKey(), map2.get(a.getValue())));
+                    }
+                });
+                BeanMap beanMap = BeanMap.create(wrapper.getO());
+                beanMap.putAll(result);
+                return wrapper.getO();
+
+            } else {
+                List<Object> keys = LambdaUtil.getCacheKeys(wrapper.getFunctions());
+                List<String> values = toStringRedisTemplate.opsForHash().multiGet(key, keys);
+                Map<String, Object> map = LambdaUtil.buildObj(values, wrapper.getO(), wrapper.getFunctions());
+                BeanMap beanMap = BeanMap.create(wrapper.getO());
+                beanMap.putAll(map);
+                return wrapper.getO();
+            }
         } else {
             return null;
         }
@@ -198,37 +216,41 @@ public class CacheAdapter<T> {
 
     /**
      * 添加或者覆盖 hash 的某个值
+     *
      * @param key
      * @param function
      * @param value
      * @param <O>
      * @param <F>
      */
-    public <O, F> void hSet(String key, SFunction<O, F> function,F value) {
-        String hashKey = LamdaUtil.getCacheKey(function);
-        toStringRedisTemplate.opsForHash().put(key,hashKey,value);
+    public <O, F> void hSet(String key, SFunction<O, F> function, F value) {
+        String hashKey = LambdaUtil.getCacheKey(function);
+        toStringRedisTemplate.opsForHash().put(key, hashKey, value);
     }
 
 
     /**
      * 添加或者覆盖 hash 的某个值
+     *
      * @param key
      * @param hashKey
      * @param value
      * @param <O>
      */
-    public <O> void hSet(String key, String hashKey,O value) {
-        toStringRedisTemplate.opsForHash().put(key,hashKey,value);
+    public <O> void hSet(String key, String hashKey, O value) {
+        toStringRedisTemplate.opsForHash().put(key, hashKey, value);
     }
 
     /**
      * 获取hash 的所有，后期观察下，数据量大的情况下的问题
+     *
      * @param key
      * @return
      */
-    public List<String> hVals(String key){
-        return  toStringRedisTemplate.opsForHash().values(key);
+    public List<String> hVals(String key) {
+        return toStringRedisTemplate.opsForHash().values(key);
     }
+
     /**
      * 获取redis hash 的某个值,支持范型
      *
@@ -237,13 +259,13 @@ public class CacheAdapter<T> {
      * @return
      */
     public <O, F> F hGet(String key, SFunction<O, F> function) {
-        Field field = LamdaUtil.getFieldName(function);
-        String hashKey = LamdaUtil.getCacheKey(function);
+        Field field = LambdaUtil.getField(function);
+        String hashKey = LambdaUtil.getCacheKey(function);
         if (!toStringRedisTemplate.opsForHash().hasKey(key, hashKey)) {
             return null;
         } else {
             String value = (String) toStringRedisTemplate.opsForHash().get(key, hashKey);
-            return (F) LamdaUtil.fillValue(field, value);
+            return (F) LambdaUtil.fillValue(field, value);
         }
     }
 
@@ -271,6 +293,7 @@ public class CacheAdapter<T> {
 
     /**
      * 对hash 里面的某个属性，进行属性操作
+     *
      * @param key
      * @param hashKey
      * @param value
@@ -279,19 +302,23 @@ public class CacheAdapter<T> {
     public Double hIncrByDouble(String key, String hashKey, double value) {
         return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
+
     /**
      * 对hash 里面的某个属性，进行属性操作
+     *
      * @param key
      * @param sFunction
      * @param value
      * @return
      */
     public <O, L> Double hIncrByDouble(String key, SFunction<O, L> sFunction, double value) {
-        String hashKey = LamdaUtil.getCacheKey(sFunction);
+        String hashKey = LambdaUtil.getCacheKey(sFunction);
         return toStringRedisTemplate.opsForHash().increment(key, hashKey, value);
     }
+
     /**
      * 对hash 里面的多个属性进行更新操作
+     *
      * @param key
      * @param sFunction
      * @param value
@@ -303,22 +330,27 @@ public class CacheAdapter<T> {
 
     /**
      * 设置时间超时
+     *
      * @param key
      * @param timeOut
      */
     public void expire(String key, Long timeOut) {
         redisTemplate.expire(key, timeOut, TimeUnit.SECONDS);
     }
+
     /**
      * 设置时间超时，在什么时候超时
+     *
      * @param key
      * @param date
      */
     public Boolean expireAt(String key, Date date) {
         return redisTemplate.expireAt(key, date);
     }
+
     /**
      * 设置 自增
+     *
      * @param key
      */
     public Long incr(String key) {
