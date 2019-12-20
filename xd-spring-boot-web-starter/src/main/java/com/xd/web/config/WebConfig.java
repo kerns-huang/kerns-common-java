@@ -22,4 +22,6 @@ public class WebConfig implements WebMvcConfigurer {
         urls.add("/swagger-ui.html");
         registry.addInterceptor(new RequestContextInterceptor()).addPathPatterns("/**").excludePathPatterns(urls);
     }
+
+
 }
