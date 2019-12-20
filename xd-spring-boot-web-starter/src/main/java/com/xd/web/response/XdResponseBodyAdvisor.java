@@ -30,8 +30,12 @@ public class XdResponseBodyAdvisor implements ResponseBodyAdvice<Result> {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-         ParameterizedTypeImpl parameterizedType=(ParameterizedTypeImpl) methodParameter.getGenericParameterType();
-        return Result.class==parameterizedType.getRawType();
+        if (methodParameter.getGenericParameterType() instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterizedType = (ParameterizedTypeImpl) methodParameter.getGenericParameterType();
+            return Result.class == parameterizedType.getRawType();
+        } else {
+            return false;
+        }
     }
 
     @Override

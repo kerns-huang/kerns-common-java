@@ -105,7 +105,7 @@ public class CacheAdapter<T> {
     }
 
     /**
-     *
+     *  按照分数据获取数据
      * @param key
      * @param minScore
      * @param maxScore
