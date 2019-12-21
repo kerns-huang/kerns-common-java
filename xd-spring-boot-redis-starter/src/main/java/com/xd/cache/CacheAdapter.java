@@ -80,6 +80,11 @@ public class CacheAdapter<T> {
         return redisTemplate.opsForValue().get(key);
     }
 
+
+    public <O> Long rPush(String key,O obj){
+        return  toStringRedisTemplate.opsForList().rightPush(key,obj);
+    }
+
     /**
      * 添加zset 数据
      *
@@ -328,6 +333,12 @@ public class CacheAdapter<T> {
         toStringRedisTemplate.opsForHash().putAll(key, wrapper.getCacheMap());
     }
 
+    /**
+     * 删除 hash 的一个 key值
+     * @param key
+     * @param hashKey
+     * @return
+     */
     public Long hDel(String key,String hashKey){
        return toStringRedisTemplate.opsForHash().delete(key,hashKey);
     }
