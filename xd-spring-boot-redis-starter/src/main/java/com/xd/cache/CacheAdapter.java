@@ -328,6 +328,10 @@ public class CacheAdapter<T> {
         toStringRedisTemplate.opsForHash().putAll(key, wrapper.getCacheMap());
     }
 
+    public Long hDel(String key,String hashKey){
+       return toStringRedisTemplate.opsForHash().delete(key,hashKey);
+    }
+
     /**
      * 设置时间超时
      *
@@ -381,6 +385,14 @@ public class CacheAdapter<T> {
         }
     }
 
+    /**
+     * 添加zset 某个对象的分值
+     * @param key
+     * @param score
+     * @param value
+     * @param <O>
+     * @return
+     */
     public <O> Double zIncrby(String key,double score,O value){
        return toStringRedisTemplate.opsForZSet().incrementScore(key,value,score);
     }
