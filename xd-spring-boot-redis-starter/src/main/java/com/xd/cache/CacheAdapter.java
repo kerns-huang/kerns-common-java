@@ -86,6 +86,16 @@ public class CacheAdapter<T> {
     }
 
     /**
+     * 获取数据
+     * @param key
+     * @param <O>
+     * @return
+     */
+    public <O> O lIndex(String key,long index){
+        return (O)toStringRedisTemplate.opsForList().index(key,index);
+    }
+
+    /**
      * 添加zset 数据
      *
      * @param key
@@ -149,7 +159,7 @@ public class CacheAdapter<T> {
      * @param key
      * @return
      */
-    public Long sSard(String key){
+    public Long sCard(String key){
         return toStringRedisTemplate.opsForSet().size(key);
     }
 
