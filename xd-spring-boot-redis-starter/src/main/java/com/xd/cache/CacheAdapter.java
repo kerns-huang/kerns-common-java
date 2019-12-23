@@ -96,6 +96,15 @@ public class CacheAdapter<T> {
     }
 
     /**
+     * 获取 list 的长度
+     * @param key
+     * @return
+     */
+    public Long lLen(String key){
+        return toStringRedisTemplate.opsForList().size(key);
+    }
+
+    /**
      * 添加zset 数据
      *
      * @param key
