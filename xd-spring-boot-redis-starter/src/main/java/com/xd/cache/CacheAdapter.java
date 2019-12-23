@@ -145,6 +145,15 @@ public class CacheAdapter<T> {
     }
 
     /**
+     * 获取一个set的长度
+     * @param key
+     * @return
+     */
+    public Long sSard(String key){
+        return toStringRedisTemplate.opsForSet().size(key);
+    }
+
+    /**
      * 判断key是否存在
      *
      * @param key
