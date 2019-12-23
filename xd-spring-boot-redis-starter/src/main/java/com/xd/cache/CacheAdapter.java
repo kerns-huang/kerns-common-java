@@ -4,6 +4,7 @@ import com.xd.core.lambda.LambdaUtil;
 import com.xd.core.lambda.QueryWrapper;
 import com.xd.core.lambda.SFunction;
 import com.xd.core.lambda.UpdateWrapper;
+import com.xd.core.web.request.PageReq;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -81,28 +82,57 @@ public class CacheAdapter<T> {
     }
 
 
-    public <O> Long rPush(String key,O obj){
-        return  toStringRedisTemplate.opsForList().rightPush(key,obj);
+    public <O> Long rPush(String key, O obj) {
+        return toStringRedisTemplate.opsForList().rightPush(key, obj);
     }
 
     /**
      * 获取数据
+     *
      * @param key
      * @param <O>
      * @return
      */
-    public <O> O lIndex(String key,long index){
-        return (O)toStringRedisTemplate.opsForList().index(key,index);
+    public <O> O lIndex(String key, long index) {
+        return (O) toStringRedisTemplate.opsForList().index(key, index);
     }
 
     /**
      * 获取 list 的长度
+     *
      * @param key
      * @return
      */
-    public Long lLen(String key){
+    public Long lLen(String key) {
         return toStringRedisTemplate.opsForList().size(key);
     }
+
+    /**
+     * 分页获取list对象
+     *
+     * @param key
+     * @param start
+     * @param end
+     * @param <O>
+     * @return
+     */
+    public <O> List<O> lRange(String key, Long start, Long end) {
+        return toStringRedisTemplate.opsForList().range(key,start,end);
+    }
+
+    /**
+     * 通过分页获取list对，分装pageReq对象
+     * @param key
+     * @param pageReq
+     * @param <O>
+     * @return
+     */
+    public <O> List<O> lRange(String key, PageReq pageReq) {
+        Long start=(pageReq.getPageNo()-1)*pageReq.getPageSize();
+        Long end=start+pageReq.getPageSize();
+        return lRange(key,start,end);
+    }
+
 
     /**
      * 添加zset 数据
@@ -165,10 +195,11 @@ public class CacheAdapter<T> {
 
     /**
      * 获取一个set的长度
+     *
      * @param key
      * @return
      */
-    public Long sCard(String key){
+    public Long sCard(String key) {
         return toStringRedisTemplate.opsForSet().size(key);
     }
 
@@ -362,12 +393,13 @@ public class CacheAdapter<T> {
 
     /**
      * 删除 hash 的一个 key值
+     *
      * @param key
      * @param hashKey
      * @return
      */
-    public Long hDel(String key,String hashKey){
-       return toStringRedisTemplate.opsForHash().delete(key,hashKey);
+    public Long hDel(String key, String hashKey) {
+        return toStringRedisTemplate.opsForHash().delete(key, hashKey);
     }
 
     /**
@@ -425,14 +457,15 @@ public class CacheAdapter<T> {
 
     /**
      * 添加zset 某个对象的分值
+     *
      * @param key
      * @param score
      * @param value
      * @param <O>
      * @return
      */
-    public <O> Double zIncrby(String key,double score,O value){
-       return toStringRedisTemplate.opsForZSet().incrementScore(key,value,score);
+    public <O> Double zIncrby(String key, double score, O value) {
+        return toStringRedisTemplate.opsForZSet().incrementScore(key, value, score);
     }
 
 
