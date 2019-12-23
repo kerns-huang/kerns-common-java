@@ -344,8 +344,7 @@ public class CacheAdapter<T> {
      * 对hash 里面的多个属性进行更新操作
      *
      * @param key
-     * @param sFunction
-     * @param value
+     * @param wrapper
      * @return
      */
     public void hMSet(String key, UpdateWrapper wrapper) {
