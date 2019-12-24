@@ -141,8 +141,12 @@ public class CacheAdapter<T> {
      * @param score
      * @param value
      */
-    public Boolean zAdd(String key, Double score, T value) {
+    public <O> Boolean zAdd(String key, Double score, O value) {
         return toStringRedisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    public <O> Double zScore(String key,O o){
+        return toStringRedisTemplate.opsForZSet().score(key,o);
     }
 
     /**
@@ -153,8 +157,8 @@ public class CacheAdapter<T> {
      * @param end
      * @return
      */
-    public List<T> zRevRange(String key, Long start, Long end) {
-        Set<T> set = toStringRedisTemplate.opsForZSet().reverseRange(key, start, end);
+    public <O> List<O> zRevRange(String key, Long start, Long end) {
+        Set<O> set = toStringRedisTemplate.opsForZSet().reverseRange(key, start, end);
         return set.stream().collect(Collectors.toList());
     }
 
@@ -168,7 +172,7 @@ public class CacheAdapter<T> {
      * @param count
      * @return
      */
-    public Set<T> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
+    public <O> Set<O> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
         return toStringRedisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
 
@@ -179,7 +183,7 @@ public class CacheAdapter<T> {
      * @param values
      * @return
      */
-    public Long sAdd(String key, T... values) {
+    public <O> Long sAdd(String key, O... values) {
         return toStringRedisTemplate.opsForSet().add(key, values);
     }
 
@@ -189,7 +193,7 @@ public class CacheAdapter<T> {
      * @param key
      * @return
      */
-    public Set<T> sMembers(String key) {
+    public <O> Set<O> sMembers(String key) {
         return toStringRedisTemplate.opsForSet().members(key);
     }
 
@@ -220,7 +224,7 @@ public class CacheAdapter<T> {
      * @param value
      * @return
      */
-    public boolean sIsMembers(String key, T value) {
+    public <O> boolean sIsMembers(String key, O value) {
         return toStringRedisTemplate.opsForSet().isMember(key, value);
     }
 
@@ -306,7 +310,7 @@ public class CacheAdapter<T> {
     }
 
     /**
-     * 获取hash 的所有，后期观察下，数据量大的情况下的问题
+     * 获取hash 的所有，后期观察下，数据量大的情况
      *
      * @param key
      * @return
@@ -340,7 +344,7 @@ public class CacheAdapter<T> {
      * @param value
      * @return
      */
-    public Long sRem(String key, T value) {
+    public <O> Long sRem(String key, O value) {
         return toStringRedisTemplate.opsForSet().remove(key, value);
     }
 
