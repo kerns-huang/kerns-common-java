@@ -395,6 +395,10 @@ public class CacheAdapter<T> {
         toStringRedisTemplate.opsForHash().putAll(key, wrapper.getCacheMap());
     }
 
+    public Long hSize(String key){
+        return toStringRedisTemplate.opsForHash().size(key);
+    }
+
     /**
      * 删除 hash 的一个 key值
      *
