@@ -18,6 +18,7 @@ public class RedisConf {
         StringRedisSerializer stringRedisSerializer=new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringRedisSerializer);
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
 

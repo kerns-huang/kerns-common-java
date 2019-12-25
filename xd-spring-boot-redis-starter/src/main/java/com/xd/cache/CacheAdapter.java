@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
  * spring.redis.lettuce.shutdown-timeout=100ms
  */
 @Component
-public class CacheAdapter<T> {
+public class CacheAdapter {
     @Resource(name = "redisTemplate")
-    private RedisTemplate<String, T> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Resource(name = "toStringRedisTemplate")
     private RedisTemplate toStringRedisTemplate;
@@ -45,7 +45,7 @@ public class CacheAdapter<T> {
      * @param key
      * @param value
      */
-    public void setValue(String key, T value) {
+    public <O> void setValue(String key, O value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
@@ -56,7 +56,7 @@ public class CacheAdapter<T> {
      * @param value
      * @param timeOut 以秒为单位，过期时间
      */
-    public void setValue(String key, T value, long timeOut) {
+    public <O> void setValue(String key, O value, long timeOut) {
         redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(timeOut));
     }
 
@@ -67,7 +67,7 @@ public class CacheAdapter<T> {
      * @param value
      * @param timeOut 以秒为单位，过期时间
      */
-    public void setValue(String key, T value, long timeOut, TimeUnit timeUnit) {
+    public <O> void setValue(String key, O value, long timeOut, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeOut, timeUnit);
     }
 
@@ -77,8 +77,8 @@ public class CacheAdapter<T> {
      * @param key
      * @return
      */
-    public T getValue(String key) {
-        return redisTemplate.opsForValue().get(key);
+    public <O> O getValue(String key) {
+        return (O)redisTemplate.opsForValue().get(key);
     }
 
 
@@ -134,47 +134,7 @@ public class CacheAdapter<T> {
     }
 
 
-    /**
-     * 添加zset 数据
-     *
-     * @param key
-     * @param score
-     * @param value
-     */
-    public <O> Boolean zAdd(String key, Double score, O value) {
-        return toStringRedisTemplate.opsForZSet().add(key, value, score);
-    }
 
-    public <O> Double zScore(String key,O o){
-        return toStringRedisTemplate.opsForZSet().score(key,o);
-    }
-
-    /**
-     * 按照分数获取数据
-     *
-     * @param key
-     * @param start
-     * @param end
-     * @return
-     */
-    public <O> List<O> zRevRange(String key, Long start, Long end) {
-        Set<O> set = toStringRedisTemplate.opsForZSet().reverseRange(key, start, end);
-        return set.stream().collect(Collectors.toList());
-    }
-
-    /**
-     * 按照分数据获取数据
-     *
-     * @param key
-     * @param minScore
-     * @param maxScore
-     * @param offset
-     * @param count
-     * @return
-     */
-    public <O> Set<O> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
-        return toStringRedisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
-    }
 
     /**
      * 添加value到set集合里面
@@ -451,12 +411,12 @@ public class CacheAdapter<T> {
      * @param keys
      * @return
      */
-    public Long zInterstore(String newkey, List<String> keys) {
+    public <O> Long zInterstore(String newkey, List<String> keys) {
         if (keys == null || keys.isEmpty()) {
             return 0L;
         }
         if (keys.size() == 1) {
-            Set<ZSetOperations.TypedTuple<T>> set = toStringRedisTemplate.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
+            Set<ZSetOperations.TypedTuple<O>> set = redisTemplate.opsForZSet().rangeWithScores(keys.get(0), 0, -1);
             redisTemplate.opsForZSet().add(newkey, set);
             return Long.valueOf(set.size());
         } else {
@@ -464,7 +424,7 @@ public class CacheAdapter<T> {
             for (int i = 1; i < keys.size(); i++) {
                 set.add(keys.get(i));
             }
-            return toStringRedisTemplate.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
+            return redisTemplate.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
         }
     }
 
@@ -478,7 +438,49 @@ public class CacheAdapter<T> {
      * @return
      */
     public <O> Double zIncrby(String key, double score, O value) {
-        return toStringRedisTemplate.opsForZSet().incrementScore(key, value, score);
+        return redisTemplate.opsForZSet().incrementScore(key, value, score);
+    }
+
+    /**
+     * 添加zset 数据
+     *
+     * @param key
+     * @param score
+     * @param value
+     */
+    public <O> Boolean zAdd(String key, Double score, O value) {
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    public <O> Double zScore(String key,O o){
+        return redisTemplate.opsForZSet().score(key,o);
+    }
+
+    /**
+     * 按照分数获取数据
+     *
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public <O> List<O> zRevRange(String key, Long start, Long end) {
+        Set<O> set = redisTemplate.opsForZSet().reverseRange(key, start, end);
+        return set.stream().collect(Collectors.toList());
+    }
+
+    /**
+     * 按照分数据获取数据
+     *
+     * @param key
+     * @param minScore
+     * @param maxScore
+     * @param offset
+     * @param count
+     * @return
+     */
+    public <O> Set<O> zRangeByScore(String key, double minScore, double maxScore, long offset, long count) {
+        return redisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
 
 
