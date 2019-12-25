@@ -448,7 +448,7 @@ public class CacheAdapter {
      * @param score
      * @param value
      */
-    public <O> Boolean zAdd(String key, Double score, O value) {
+    public <O> Boolean zAdd(String key, double score, O value) {
         return redisTemplate.opsForZSet().add(key, value, score);
     }
 
@@ -464,7 +464,7 @@ public class CacheAdapter {
      * @param end
      * @return
      */
-    public <O> List<O> zRevRange(String key, Long start, Long end) {
+    public <O> List<O> zRevRange(String key, long start, long end) {
         Set<O> set = redisTemplate.opsForZSet().reverseRange(key, start, end);
         return set.stream().collect(Collectors.toList());
     }
