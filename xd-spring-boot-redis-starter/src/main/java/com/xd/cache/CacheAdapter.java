@@ -31,13 +31,15 @@ import java.util.stream.Collectors;
  * spring.redis.lettuce.pool.max-wait=1ms
  * spring.redis.lettuce.shutdown-timeout=100ms
  */
-@Component
 public class CacheAdapter {
-    @Resource(name = "redisTemplate")
     private RedisTemplate redisTemplate;
 
-    @Resource(name = "toStringRedisTemplate")
     private RedisTemplate toStringRedisTemplate;
+
+    public CacheAdapter(RedisTemplate redisTemplate,RedisTemplate toStringRedisTemplate){
+        this.redisTemplate=redisTemplate;
+        this.toStringRedisTemplate=toStringRedisTemplate;
+    }
 
     /**
      * 设置key 和value
@@ -85,6 +87,12 @@ public class CacheAdapter {
     public <O> Long rPush(String key, O obj) {
         return toStringRedisTemplate.opsForList().rightPush(key, obj);
     }
+
+    public <O> Long rPushAll(String key,Collection<O> list){
+        return redisTemplate.opsForList().rightPushAll(key,list);
+    }
+
+
 
     /**
      * 获取数据

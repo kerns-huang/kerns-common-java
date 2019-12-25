@@ -1,12 +1,18 @@
 package com.xd.redis.conf;
 
+import com.xd.cache.CacheAdapter;
 import com.xd.redis.serializer.ToStringRedisSerializer;
+import lombok.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import javax.annotation.Resource;
+import java.util.concurrent.Callable;
 
 @Configuration
 public class RedisConf {
@@ -32,5 +38,10 @@ public class RedisConf {
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
         redisTemplate.setHashValueSerializer(stringRedisSerializer);
         return redisTemplate;
+    }
+    @Bean
+    public CacheAdapter cacheAdapter(RedisTemplate redisTemplate,RedisTemplate toStringRedisTemplate){
+        CacheAdapter cacheAdapter=new CacheAdapter(redisTemplate,toStringRedisTemplate);
+        return cacheAdapter;
     }
 }
