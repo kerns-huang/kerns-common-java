@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * bigdecimal convert
+ * 放到库里面的时候 自动把BigDecimal 转换成double
  *
  * @author xiaohei
  * @create 2019-12-13 下午5:18

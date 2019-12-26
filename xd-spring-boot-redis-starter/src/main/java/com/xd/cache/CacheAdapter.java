@@ -95,7 +95,7 @@ public class CacheAdapter {
 
 
     /**
-     * 获取数据
+     * 获取list 第几位的数据
      *
      * @param key
      * @param <O>
@@ -176,16 +176,6 @@ public class CacheAdapter {
     }
 
     /**
-     * 判断key是否存在
-     *
-     * @param key
-     * @return
-     */
-    public boolean exists(String key) {
-        return toStringRedisTemplate.hasKey(key);
-    }
-
-    /**
      * 判断是否是set成员
      *
      * @param key
@@ -196,6 +186,15 @@ public class CacheAdapter {
         return toStringRedisTemplate.opsForSet().isMember(key, value);
     }
 
+    /**
+     * 判断key是否存在
+     *
+     * @param key
+     * @return
+     */
+    public boolean exists(String key) {
+        return toStringRedisTemplate.hasKey(key);
+    }
     /**
      * 设置hash 的 kev hashkey value
      */
