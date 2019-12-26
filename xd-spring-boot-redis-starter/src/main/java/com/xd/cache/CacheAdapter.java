@@ -6,6 +6,7 @@ import com.xd.core.lambda.SFunction;
 import com.xd.core.lambda.UpdateWrapper;
 import com.xd.core.web.request.PageReq;
 import org.springframework.cglib.beans.BeanMap;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
@@ -201,6 +202,8 @@ public class CacheAdapter {
     public void hMSet(String key, Map map) {
         toStringRedisTemplate.opsForHash().putAll(key, map);
     }
+
+
 
     /**
      * 删除hash 里面的key值
@@ -500,5 +503,17 @@ public class CacheAdapter {
         return redisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore, offset, count);
     }
 
+    /**
+     * 添加地理定位
+     * @param key
+     * @param x
+     * @param y
+     * @param o
+     * @param <O>
+     * @return
+     */
+    public <O> Long geoAdd(String key,double x,double y,O o){
+        return redisTemplate.opsForGeo().add(key,new Point(x,y),o);
+    }
 
 }
