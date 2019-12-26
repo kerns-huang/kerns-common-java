@@ -203,6 +203,25 @@ public class CacheAdapter {
     }
 
     /**
+     * 删除hash 里面的key值
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public Long hRem(String key,String hashKey){
+        return toStringRedisTemplate.opsForHash().delete(key,hashKey);
+    }
+
+    /**
+     * 批量删除hash里面的key
+     * @param key
+     * @param hashKeys
+     * @return
+     */
+    public Long hMRem(String key,String... hashKeys){
+       return toStringRedisTemplate.opsForHash().delete(key,hashKeys);
+    }
+    /**
      * 获取hash的多个字段，转换成cache对象
      *
      * @param key
