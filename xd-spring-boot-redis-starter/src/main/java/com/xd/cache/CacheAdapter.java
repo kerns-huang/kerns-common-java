@@ -9,9 +9,6 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.*;
@@ -446,6 +443,18 @@ public class CacheAdapter {
             }
             return redisTemplate.opsForZSet().intersectAndStore(keys.get(0), set, newkey);
         }
+    }
+
+    /**
+     * 批量获取zset 获取数据
+     * @param key
+     * @param start
+     * @param end
+     * @param <O>
+     * @return
+     */
+    public  <O> Set<O> zRange(String key,long start,long end){
+       return redisTemplate.opsForZSet().range(key,start,end);
     }
 
     /**
