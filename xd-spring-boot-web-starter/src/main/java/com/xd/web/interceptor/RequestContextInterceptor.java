@@ -29,6 +29,10 @@ public class RequestContextInterceptor implements HandlerInterceptor {
         if (!StringUtils.isEmpty(uid)) {
             RequestContext.setUid(Integer.parseInt(uid));
         }
+        String userCode = request.getHeader("usercode");
+        if (!StringUtils.isEmpty(userCode)) {
+            RequestContext.setUserCode(userCode);
+        }
         String appId = request.getHeader("appid");
         if (StringUtils.isEmpty(appId)) {
             log.error("header appid can not be null");
