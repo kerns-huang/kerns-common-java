@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import java.math.BigDecimal;
 
 /**
- * 系统变量设置
+ * 系统变量设置 cat_limit 表变更
  *
  * @author xiaohei
  * @create 2019-12-10 下午5:54
