@@ -25,6 +25,5 @@ public class WebUtil {
         }
         Locale locale = new Locale(ss[0], ss[1]);
         return locale;
-
     }
 }

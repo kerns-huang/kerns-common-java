@@ -40,7 +40,7 @@ public class XdResponseBodyAdvisor implements ResponseBodyAdvice<Result> {
 
     @Override
     public Result beforeBodyWrite(Result s, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (StringUtils.isNotEmpty(s.getMsgCode())) {
+        if (s!=null&&StringUtils.isNotEmpty(s.getMsgCode())) {
             s.setMsg(messageSource.getMessage(s.getMsgCode(), null, LocalContext.get()));
         }
         return s;
