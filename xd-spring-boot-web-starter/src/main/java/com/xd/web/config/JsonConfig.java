@@ -19,7 +19,7 @@ public class JsonConfig {
         SimpleModule simpleModule=new SimpleModule();
         simpleModule.addSerializer(Boolean.class,new BooleanSerializer());
         simpleModule.addSerializer(Number.class,new ToStringSerializer());
-        simpleModule.addSerializer(String.class,new ImageUrlSerializer("12312"));
+        simpleModule.addSerializer(String.class,new ImageUrlSerializer());
         return simpleModule;
     }
 }
