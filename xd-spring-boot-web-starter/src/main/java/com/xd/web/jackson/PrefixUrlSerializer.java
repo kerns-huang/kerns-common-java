@@ -25,10 +25,6 @@ public class PrefixUrlSerializer extends StdScalarSerializer<String> {
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         value = StringUtils.replace(value, "/?upload", "");
-        if (StringUtils.isEmpty(value) && "avatar".equals(prefix)) {
-            gen.writeString("/default_avatar.png");
-        } else {
-            gen.writeString(prefix + "/" + value + ".png");
-        }
+        gen.writeString(prefix + "/" + value + ".png");
     }
 }

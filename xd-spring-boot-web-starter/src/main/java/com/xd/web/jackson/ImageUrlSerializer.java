@@ -40,7 +40,6 @@ public  class ImageUrlSerializer extends StdScalarSerializer<String> implements 
                case "pay_type":
                case "vip_icon":
                case "symbol":
-               case "avatar":
                    return new PrefixUrlSerializer(imageUrl.group());
                default:
                    return new StringSerializer();
