@@ -3,6 +3,7 @@ package com.xd.web.config;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.xd.web.jackson.BooleanSerializer;
+import com.xd.web.jackson.ImageUrlSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +19,7 @@ public class JsonConfig {
         SimpleModule simpleModule=new SimpleModule();
         simpleModule.addSerializer(Boolean.class,new BooleanSerializer());
         simpleModule.addSerializer(Number.class,new ToStringSerializer());
+        simpleModule.addSerializer(String.class,new ImageUrlSerializer("12312"));
         return simpleModule;
     }
 }
