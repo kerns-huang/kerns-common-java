@@ -5,7 +5,9 @@ import com.xd.core.lambda.SFunction;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * es 查询需要传入的参数
@@ -24,6 +26,13 @@ public class EsQueryParameter {
     public <O, F> EsQueryParameter eq(SFunction<O, F> filed, Object value) {
         String column = LambdaUtil.getCacheKey(filed);
         whereCondition.add(column + " = " + value);
+        return this;
+    }
+
+
+    public <O, F> EsQueryParameter in(SFunction<O, F> filed, Collection<?> values) {
+        String column = LambdaUtil.getCacheKey(filed);
+        whereCondition.add(column + "in " + values.stream().map(i -> String.format("%s", i)).collect(Collectors.joining(",", "(", ")")) + " ");
         return this;
     }
 
@@ -80,7 +89,6 @@ public class EsQueryParameter {
     }
 
     /**
-     *
      * @param pageSize
      * @return
      */
@@ -89,7 +97,7 @@ public class EsQueryParameter {
         return this;
     }
 
-    public boolean hashWhereCondition(){
+    public boolean hashWhereCondition() {
         return !whereCondition.isEmpty();
     }
 
@@ -97,7 +105,7 @@ public class EsQueryParameter {
         return String.join(" and ", whereCondition);
     }
 
-    public boolean hasLimit(){
-        return limit>0;
+    public boolean hasLimit() {
+        return limit > 0;
     }
 }
