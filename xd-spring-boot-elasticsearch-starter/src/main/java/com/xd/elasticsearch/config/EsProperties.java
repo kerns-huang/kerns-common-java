@@ -1,5 +1,6 @@
 package com.xd.elasticsearch.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -8,10 +9,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author xiaohei
  * @create 2020-04-15 上午11:13
  **/
-@ConfigurationProperties(prefix = "spring.data.es")
+@ConfigurationProperties(prefix = "xd.data.es")
+@Data
 public class EsProperties {
     /**
      * 和 es的链接方式 ，目前使用rest api的方式调用
      */
-    private String url;
+    private String host;
+    /**
+     * 返回端口
+     */
+    private String port;
+    /**
+     * 返回结果
+     */
+    private String responseType;
 }
