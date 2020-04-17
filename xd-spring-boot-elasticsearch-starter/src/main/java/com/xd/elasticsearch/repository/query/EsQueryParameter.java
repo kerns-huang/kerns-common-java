@@ -2,6 +2,7 @@ package com.xd.elasticsearch.repository.query;
 
 import com.xd.core.lambda.LambdaUtil;
 import com.xd.core.lambda.SFunction;
+import com.xd.elasticsearch.core.enums.OrderType;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -20,8 +21,12 @@ public class EsQueryParameter {
      * 具体传入的参数，如果是object 对象，做一层转换
      */
     private final List<String> whereCondition = new ArrayList<>();
+
+    private final List<String> orderCondition=new ArrayList<>();
     @Getter
     private int limit = -1;
+
+
 
     public <O, F> EsQueryParameter eq(SFunction<O, F> filed, Object value) {
         String column = LambdaUtil.getCacheKey(filed);
@@ -78,13 +83,44 @@ public class EsQueryParameter {
      * @param value
      * @return
      */
-    public EsQueryParameter leftLike(String column, String value) {
+    public <O, F> EsQueryParameter leftLike(SFunction<O, F> filed, String value) {
+        String column = LambdaUtil.getCacheKey(filed);
         whereCondition.add(column + " like '%" + value + "%'");
         return this;
     }
 
-    public EsQueryParameter rightLike(String column, String value) {
+    public <O, F> EsQueryParameter rightLike(SFunction<O, F> filed, String value) {
+        String column = LambdaUtil.getCacheKey(filed);
         whereCondition.add(column + " like '" + value + "%'");
+        return this;
+    }
+
+    public <O, F> EsQueryParameter order(SFunction<O, F> filed, OrderType orderType){
+        String column = LambdaUtil.getCacheKey(filed);
+        orderCondition.add(column+" "+orderType.getValue());
+        return this;
+    }
+
+    /**
+     * 多个字段倒叙排序
+     * @param fields
+     * @param <O>
+     * @param <F>
+     * @return
+     */
+    public <O, F> EsQueryParameter orderDesc(SFunction<O, F>... fields){
+        for(SFunction<O, F> field:fields){
+            String column = LambdaUtil.getCacheKey(field);
+            orderCondition.add(column+" "+OrderType.DESC.getValue());
+        }
+        return this;
+    }
+
+    public <O, F> EsQueryParameter order(SFunction<O, F>... fields){
+        for(SFunction<O, F> field:fields){
+            String column = LambdaUtil.getCacheKey(field);
+            orderCondition.add(column);
+        }
         return this;
     }
 
@@ -103,6 +139,14 @@ public class EsQueryParameter {
 
     public String getWhereSql() {
         return String.join(" and ", whereCondition);
+    }
+
+    public boolean hasOrderCondition(){
+        return !orderCondition.isEmpty();
+    }
+
+    public String getOrderSql(){
+        return String.join(" , ",orderCondition);
     }
 
     public boolean hasLimit() {

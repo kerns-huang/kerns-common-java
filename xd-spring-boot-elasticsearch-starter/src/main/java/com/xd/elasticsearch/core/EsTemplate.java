@@ -42,6 +42,9 @@ public class EsTemplate implements EsOperations {
         if(parameter.hashWhereCondition()){
             buffer.append(" where ").append(parameter.getWhereSql());
         }
+        if(parameter.hasOrderCondition()){
+            buffer.append(" order by ").append(parameter.getOrderSql());
+        }
         if(parameter.hasLimit()){
             buffer.append(" limit ").append(parameter.getLimit());
         }
