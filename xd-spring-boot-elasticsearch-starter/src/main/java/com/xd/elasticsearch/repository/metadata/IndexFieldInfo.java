@@ -2,6 +2,7 @@ package com.xd.elasticsearch.repository.metadata;
 
 import com.xd.core.util.StringUtils;
 import com.xd.elasticsearch.core.anno.IndexField;
+import lombok.Getter;
 
 import java.lang.reflect.Field;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.Field;
  * @author xiaohei
  * @create 2020-04-16 下午2:21
  **/
+@Getter
 public class IndexFieldInfo {
     /**
      * 字段名

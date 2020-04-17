@@ -1,8 +1,9 @@
 package com.xd.elasticsearch.core;
 
 import com.xd.elasticsearch.ElasticSearchClient;
+import com.xd.elasticsearch.repository.metadata.IndexInfo;
+import com.xd.elasticsearch.repository.metadata.IndexInfoHelper;
 import com.xd.elasticsearch.repository.query.EsQueryParameter;
-import com.xd.json.JSONUtils;
 
 import java.util.List;
 
@@ -16,23 +17,37 @@ public class EsTemplate implements EsOperations {
 
     private ElasticSearchClient client;
 
-    public EsTemplate(ElasticSearchClient client){
+    private ResponseResover responseResover;
+
+    public EsTemplate(ElasticSearchClient client,ResponseResover responseResover){
        this.client=client;
+       this.responseResover=responseResover;
     }
 
     /**
      *
-     * @param sql 绑定的sql
-     * @param entityClass 传入的对象数值
-     * @param resultClass 返回的对象
+     * @param parameter
+     * @param resultClass
      * @param <T>
      * @return
      */
     public <T> List<T> findList(EsQueryParameter parameter, Class<T> resultClass){
         //TODO 处理sql 把入参的值和sql的变量进行绑定
-        String response= client.post("");
+        IndexInfo indexInfo= IndexInfoHelper.getIndexInfo(resultClass);
+        StringBuffer buffer=new StringBuffer();
+        buffer.append(" select ").append(indexInfo.getSelectSql())
+                .append(" from ")
+                .append(indexInfo.getIndexName());
+        if(parameter.hashWhereCondition()){
+            buffer.append(" where ").append(parameter.getWhereSql());
+        }
+        if(parameter.hasLimit()){
+            buffer.append(" limit ").append(parameter.getLimit());
+        }
+        String sql=buffer.toString().toLowerCase();
+        String response= client.post(sql);
         // 把json串转换成字符串对象
-        return JSONUtils.toList(response,resultClass);
+        return responseResover.resover(response,resultClass);
     }
 
 

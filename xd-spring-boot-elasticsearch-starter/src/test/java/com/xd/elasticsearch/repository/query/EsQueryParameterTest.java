@@ -11,7 +11,7 @@ class EsQueryParameterTest {
         parameter.eq(User::getId, 123);
         parameter.like(User::getNickname,"kk");
         parameter.limit(100);
-        System.out.println(parameter.getSql());
+        System.out.println(parameter.getWhereSql());
     }
 
 

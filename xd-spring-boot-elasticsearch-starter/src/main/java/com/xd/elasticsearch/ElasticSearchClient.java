@@ -1,10 +1,7 @@
 package com.xd.elasticsearch;
 
-import com.sun.istack.internal.NotNull;
 import com.xd.json.JSONUtils;
-import lombok.extern.log4j.Log4j;
 import okhttp3.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +55,6 @@ public class ElasticSearchClient {
 
 
     static class LoggingInterceptor implements Interceptor {
-        @NotNull
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();

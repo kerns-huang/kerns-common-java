@@ -2,6 +2,7 @@ package com.xd.elasticsearch.repository.query;
 
 import com.xd.core.lambda.LambdaUtil;
 import com.xd.core.lambda.SFunction;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class EsQueryParameter {
      * 具体传入的参数，如果是object 对象，做一层转换
      */
     private final List<String> whereCondition = new ArrayList<>();
-
+    @Getter
     private int limit = -1;
 
     public <O, F> EsQueryParameter eq(SFunction<O, F> filed, Object value) {
@@ -88,11 +89,15 @@ public class EsQueryParameter {
         return this;
     }
 
-    public String getSql() {
-        String sql = String.join(" and ", whereCondition);
-        if ( limit > 0) {
-            sql = sql + " limit " + limit;
-        }
-        return sql;
+    public boolean hashWhereCondition(){
+        return !whereCondition.isEmpty();
+    }
+
+    public String getWhereSql() {
+        return String.join(" and ", whereCondition);
+    }
+
+    public boolean hasLimit(){
+        return limit>0;
     }
 }
