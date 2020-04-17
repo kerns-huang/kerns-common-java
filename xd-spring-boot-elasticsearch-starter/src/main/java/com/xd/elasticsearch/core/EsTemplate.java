@@ -1,6 +1,7 @@
 package com.xd.elasticsearch.core;
 
 import com.xd.elasticsearch.ElasticSearchClient;
+import com.xd.elasticsearch.core.response.ResponseResover;
 import com.xd.elasticsearch.repository.metadata.IndexInfo;
 import com.xd.elasticsearch.repository.metadata.IndexInfoHelper;
 import com.xd.elasticsearch.repository.query.EsQueryParameter;

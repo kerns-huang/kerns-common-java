@@ -1,29 +1,27 @@
-package com.xd.elasticsearch.core;
+package com.xd.elasticsearch.core.response;
 
 import com.xd.core.reflect.ClassUtil;
 import com.xd.core.util.StringUtils;
 import com.xd.elasticsearch.repository.metadata.Column;
 import com.xd.elasticsearch.repository.metadata.JsonResult;
 import com.xd.json.JSONUtils;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * 返回的json串转换成对象
+ * es json 数据返回解析
  *
  * @author xiaohei
- * @create 2020-04-16 下午5:43
+ * @create 2020-04-17 上午10:24
  **/
-public class ResponseResover {
+public class JSONResponseResolver implements ResponseResover {
 
-    public <T> List<T> resover( String response,Class<T> resultClass)  {
+    public <T> List<T> resover(String response, Class<T> resultClass)  {
         JsonResult jsonResult= JSONUtils.toObject(response, JsonResult.class);
         jsonResult.getColumns();
         List<Column> columnList= jsonResult.getColumns();
@@ -64,6 +62,4 @@ public class ResponseResover {
         }
         throw new UnsupportedOperationException("不支持的数据格式," + propertyDescriptor.getPropertyType().getName());
     }
-
-
 }

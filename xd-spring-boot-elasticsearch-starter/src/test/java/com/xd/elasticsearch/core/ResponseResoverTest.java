@@ -1,5 +1,6 @@
 package com.xd.elasticsearch.core;
 
+import com.xd.elasticsearch.core.response.ResponseResover;
 import com.xd.elasticsearch.repository.bean.User;
 
 import java.util.List;
