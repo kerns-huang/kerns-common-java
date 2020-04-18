@@ -24,4 +24,5 @@ public class EsProperties {
      * 返回结果
      */
     private String responseType;
+
 }

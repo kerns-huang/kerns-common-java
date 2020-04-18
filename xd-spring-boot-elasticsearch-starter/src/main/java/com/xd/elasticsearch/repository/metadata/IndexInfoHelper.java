@@ -23,7 +23,10 @@ public class IndexInfoHelper {
 
 
     public static IndexInfo getIndexInfo(Class clazz){
-        return INDEX_INFO_MAP.get(clazz);
+        if(!INDEX_INFO_MAP.containsKey(clazz)) {
+            INDEX_INFO_MAP.put(clazz,initIndexInfo(clazz));
+        }
+       return INDEX_INFO_MAP.get(clazz);
     }
     /**
      * 初始化 es index 和 实体类的对应关系
