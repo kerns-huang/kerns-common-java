@@ -1,6 +1,7 @@
 package com.xd.elasticsearch;
 
 import com.xd.json.JSONUtils;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Objects;
  * @author xiaohei
  * @create 2020-04-15 下午3:17
  **/
+@Slf4j
 public class ElasticSearchClient {
 
     private static final String LOG_TAG = "OkHttpUtil";
@@ -48,7 +50,7 @@ public class ElasticSearchClient {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("search elastic error",e);
         }
         return null;
     }
