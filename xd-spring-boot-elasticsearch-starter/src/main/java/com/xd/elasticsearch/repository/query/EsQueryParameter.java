@@ -148,6 +148,15 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
         return this;
     }
 
+    public EsQueryParameter and(){
+        whereCondition.add(" and ");
+        return this;
+    }
+
+    public EsQueryParameter or(){
+        whereCondition.add(" or ");
+        return this;
+    }
 
     public EsQueryParameter getInstance() {
         return new EsQueryParameter();
@@ -171,13 +180,22 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < whereCondition.size(); i++) {
             if (i == 0) {
-                builder.append(whereCondition.get(i));
+                // 如果第一行数据包含 and or ，则去掉
+                String first=whereCondition.get(i);
+                if(StringUtils.containsAny(first,"and","or")){
+                    first=first.replace("and","");
+                    first=first.replace("or","");
+                }
+                builder.append(first);
             } else if (StringUtils.containsAny(whereCondition.get(i), "and", "or")) {
                 builder.append(whereCondition.get(i));
-            } else {
+            }else if(StringUtils.containsAny(whereCondition.get(i-1),"and", "or")){
+                builder.append(whereCondition.get(i));
+            }else {
                 builder.append(" and ").append(whereCondition.get(i));
             }
         }
+
         String whereSql = builder.toString();
         if (nestedQuery.isEmpty()) {
             return whereSql;

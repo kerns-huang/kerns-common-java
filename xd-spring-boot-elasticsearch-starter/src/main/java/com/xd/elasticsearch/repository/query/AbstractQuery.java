@@ -38,7 +38,6 @@ public abstract class AbstractQuery<F extends AbstractQuery<F>> implements Compa
 
 
 
-
     private String getNestedQueryKey() {
         Long seq= nestedQuerySeq.getAndAdd(1);
         String key="nested"+seq;
