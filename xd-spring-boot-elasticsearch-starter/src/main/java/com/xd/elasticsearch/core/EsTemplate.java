@@ -6,6 +6,7 @@ import com.xd.elasticsearch.repository.metadata.IndexInfo;
 import com.xd.elasticsearch.repository.metadata.IndexInfoHelper;
 import com.xd.elasticsearch.repository.query.EsQueryParameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +56,9 @@ public class EsTemplate implements EsOperations {
         }
         String sql=buffer.toString().toLowerCase();
         String response= client.post(sql);
+        if(response==null){
+            return new ArrayList<>();
+        }
         // 把json串转换成字符串对象
         return responseResover.resover(response,resultClass);
     }
