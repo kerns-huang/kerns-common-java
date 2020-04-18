@@ -36,8 +36,13 @@ public class EsTemplate implements EsOperations {
         //TODO 处理sql 把入参的值和sql的变量进行绑定
         IndexInfo indexInfo= IndexInfoHelper.getIndexInfo(resultClass);
         StringBuffer buffer=new StringBuffer();
-        buffer.append(" select ").append(indexInfo.getSelectSql())
-                .append(" from ")
+        buffer.append(" select ");
+        if(parameter.hasSelect()){
+            buffer.append(parameter.getSelectSql());
+        }else{
+            buffer.append(indexInfo.getSelectSql());
+        }
+        buffer.append(" from ")
                 .append(indexInfo.getIndexName());
         if(parameter.hashWhereCondition()){
             buffer.append(" where ").append(parameter.getWhereSql());

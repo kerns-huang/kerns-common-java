@@ -220,5 +220,13 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
         return limit > 0;
     }
 
+    public boolean hasSelect() {
+        return !select.isEmpty();
+    }
+
+    public String getSelectSql() {
+        return String.join(" , ", select);
+    }
+
 
 }
