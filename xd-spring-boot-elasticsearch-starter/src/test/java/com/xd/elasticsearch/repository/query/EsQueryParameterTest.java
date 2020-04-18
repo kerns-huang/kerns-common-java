@@ -16,6 +16,12 @@ class EsQueryParameterTest {
         parameter.limit(100);
         System.out.println(parameter.getWhereSql());
     }
+    @Test
+    public void testSelect(){
+        EsQueryParameter parameter = new EsQueryParameter();
+        parameter.select(User::getId,User::getNickname);
+        System.out.println(parameter.getSelectSql());
+    }
 
     @Test
     public void testAnd(){
