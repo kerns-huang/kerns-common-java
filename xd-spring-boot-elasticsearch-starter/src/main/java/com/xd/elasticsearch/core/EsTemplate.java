@@ -36,25 +36,7 @@ public class EsTemplate implements EsOperations {
     public <T> List<T> findList(EsQueryParameter parameter, Class<T> resultClass){
         //TODO 处理sql 把入参的值和sql的变量进行绑定
         IndexInfo indexInfo= IndexInfoHelper.getIndexInfo(resultClass);
-        StringBuffer buffer=new StringBuffer();
-        buffer.append(" select ");
-        if(parameter.hasSelect()){
-            buffer.append(parameter.getSelectSql());
-        }else{
-            buffer.append(indexInfo.getSelectSql());
-        }
-        buffer.append(" from ")
-                .append(indexInfo.getIndexName());
-        if(parameter.hashWhereCondition()){
-            buffer.append(" where ").append(parameter.getWhereSql());
-        }
-        if(parameter.hasOrderCondition()){
-            buffer.append(" order by ").append(parameter.getOrderSql());
-        }
-        if(parameter.hasLimit()){
-            buffer.append(" limit ").append(parameter.getLimit());
-        }
-        String sql=buffer.toString().toLowerCase();
+        String sql=EsSqlParser.parse(parameter,indexInfo);
         String response= client.post(sql);
         if(response==null){
             return new ArrayList<>();

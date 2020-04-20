@@ -38,6 +38,7 @@ public interface Nested<F> extends Serializable {
      * OR 嵌套
      * <p>
      * 例: or(i -&gt; i.eq("name", "李白").ne("status", "活着"))
+     *
      * </p>
      * or (12313 and 123123 ) or
      * @param condition 执行条件
@@ -46,15 +47,15 @@ public interface Nested<F> extends Serializable {
      */
     F  or(Consumer<F> consumer);
 
-//    /**
-//     * 正常嵌套 不带 AND 或者 OR
-//     * <p>
-//     * 例: nested(i -&gt; i.eq("name", "李白").ne("status", "活着"))
-//     * </p>
-//     *
-//     * @param condition 执行条件
-//     * @param consumer  消费函数
-//     * @return children
-//     */
-//     F nested(Consumer<F> consumer);
+    /**
+     * 正常嵌套 不带 AND 或者 OR,只使用 （）
+     * <p>
+     * 例: nested(i -&gt; i.eq("name", "李白").ne("status", "活着"))
+     * </p>
+     *
+     * @param condition 执行条件
+     * @param consumer  消费函数
+     * @return children
+     */
+     F nested(Consumer<F> consumer);
 }

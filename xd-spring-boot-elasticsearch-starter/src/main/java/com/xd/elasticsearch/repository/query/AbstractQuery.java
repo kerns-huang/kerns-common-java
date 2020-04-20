@@ -36,6 +36,12 @@ public abstract class AbstractQuery<F extends AbstractQuery<F>> implements Compa
         return (F)this;
     }
 
+    public F nested(Consumer<F> consumer){
+        String key= addNestedCondition(consumer);
+        whereCondition.add(" ("+key+")");
+        return (F)this;
+    }
+
 
 
     private String getNestedQueryKey() {
