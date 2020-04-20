@@ -1,7 +1,7 @@
 package com.xd.elasticsearch.repository.metadata;
 
 import com.xd.core.util.StringUtils;
-import com.xd.elasticsearch.core.anno.IndexField;
+import com.xd.elasticsearch.core.anno.EsIndexField;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
@@ -25,7 +25,7 @@ public class IndexFieldInfo {
 
     public IndexFieldInfo(Field field) {
         this.property = field.getName();
-        IndexField indexField = field.getAnnotation(IndexField.class);
+        EsIndexField indexField = field.getAnnotation(EsIndexField.class);
         String column = null;
         if (null == indexField || StringUtils.isBlank(indexField.value())) {
             column = this.property;

@@ -1,9 +1,15 @@
 package com.xd.elasticsearch.core.anno;
 
-public @interface IndexField {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EsIndexField {
 
     /**
-     * el字段值,
      * 不需要配置该值的情况:
      */
     String value() default "";

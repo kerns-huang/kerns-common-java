@@ -17,6 +17,10 @@ class EsSqlParserTest {
                 .eq(User::getNickname,"a");
         System.out.println(EsSqlParser.parse(parameter,indexInfo));
     }
+
+    /**
+     *  添加子查询添加and
+     */
     @Test
     public void testNestAnd(){
         IndexInfo indexInfo= IndexInfoHelper.initIndexInfo(User.class);
@@ -24,6 +28,10 @@ class EsSqlParserTest {
         parameter.or(i->i.like(User::getNickname,"a").or().like(User::getCountry,"a"));
         System.out.println(EsSqlParser.parse(parameter,indexInfo));
     }
+
+    /**
+     * 添加子查询
+     */
     @Test
     public void testNested(){
         IndexInfo indexInfo=IndexInfoHelper.initIndexInfo(User.class);
@@ -31,6 +39,8 @@ class EsSqlParserTest {
         parameter.nested(i->i.like(User::getNickname,"a").or().like(User::getCountry,"a"));
         System.out.println(EsSqlParser.parse(parameter,indexInfo));
     }
+
+
 
 
 

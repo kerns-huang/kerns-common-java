@@ -1,5 +1,7 @@
 package com.xd.elasticsearch.repository.bean;
 
+import com.xd.elasticsearch.core.anno.EsIndex;
+import com.xd.elasticsearch.core.anno.EsIndexField;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,12 +14,14 @@ import java.util.Date;
  * @since 2019-11-26
  */
 @Data
+@EsIndex(value = "user")
 public class User implements Serializable {
     private static final long serialVersionUID = 7930371866124379726L;
     private Integer id ;
     /**
      * 用户昵称
      */
+    @EsIndexField(value = "nick_name_1")
     private String nickname ;
     /**
      * 手机号

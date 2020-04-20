@@ -36,6 +36,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
     public final <O> EsQueryParameter select(SFunction<O, ?>... fields) {
         if (ArrayUtils.isNotEmpty(fields)) {
             for (SFunction<O, ?> field : fields) {
+                //需要考虑下 添加indexField的情况
                 select.add(LambdaUtil.getCacheKey(field));
             }
         }

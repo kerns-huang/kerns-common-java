@@ -2,6 +2,7 @@ package com.xd.elasticsearch.repository.metadata;
 
 import com.xd.core.reflect.ReflectUtil;
 import com.xd.core.util.StringUtils;
+import com.xd.elasticsearch.core.anno.EsIndex;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -22,39 +23,47 @@ public class IndexInfoHelper {
     private static final Map<Class<?>, IndexInfo> INDEX_INFO_MAP = new ConcurrentHashMap<>();
 
 
-    public static IndexInfo getIndexInfo(Class clazz){
-        if(!INDEX_INFO_MAP.containsKey(clazz)) {
-            INDEX_INFO_MAP.put(clazz,initIndexInfo(clazz));
+    public static IndexInfo getIndexInfo(Class clazz) {
+        if (!INDEX_INFO_MAP.containsKey(clazz)) {
+            INDEX_INFO_MAP.put(clazz, initIndexInfo(clazz));
         }
-       return INDEX_INFO_MAP.get(clazz);
+        return INDEX_INFO_MAP.get(clazz);
     }
+
     /**
      * 初始化 es index 和 实体类的对应关系
+     *
      * @param clazz
      * @return
      */
-    public  static IndexInfo initIndexInfo(Class clazz) {
-        if(INDEX_INFO_MAP.containsKey(clazz)){
+    public static IndexInfo initIndexInfo(Class clazz) {
+        if (INDEX_INFO_MAP.containsKey(clazz)) {
             return INDEX_INFO_MAP.get(clazz);
         }
         List<Field> fieldList = ReflectUtil.getField(clazz);
         List<IndexFieldInfo> fieldInfoList = fieldList.stream().map(a -> {
             return new IndexFieldInfo(a);
         }).collect(Collectors.toList());
-        IndexInfo indexInfo = new IndexInfo(clazz,initIndexName(clazz.getSimpleName()),fieldInfoList);
-        INDEX_INFO_MAP.put(clazz,indexInfo);
+        IndexInfo indexInfo = new IndexInfo(clazz, initIndexName(clazz), fieldInfoList);
+        INDEX_INFO_MAP.put(clazz, indexInfo);
         return indexInfo;
     }
 
 
-    private static String initIndexName(String className) {
-        String tableName = className;
-        // 开启表名下划线申明
-        tableName = StringUtils.camelToUnderline(tableName);
-        // 大写命名判断
-        tableName = tableName.toUpperCase();
-
+    private static String initIndexName(Class<?> clazz) {
+        EsIndex esIndex = clazz.getAnnotation(EsIndex.class);
+        String tableName;
+        if (esIndex == null || StringUtils.isEmpty(esIndex.value())) {
+            tableName = clazz.getSimpleName();
+            // 开启表名下划线申明
+            tableName = StringUtils.camelToUnderline(tableName);
+            // 大写命名判断
+            tableName = tableName.toLowerCase();
+        }else {
+            tableName=esIndex.value();
+        }
         return tableName;
+
     }
 
 }
