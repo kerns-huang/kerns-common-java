@@ -38,7 +38,7 @@ public class IndexInfoHelper {
         return INDEX_INFO_MAP.get(clazz);
     }
 
-    public static String getCloumn(SFunction fn) {
+    public static String getColumn(SFunction fn) {
         try {
             if (FUNCTION_CLOUMN_MAP.containsKey(fn)) {
                 return FUNCTION_CLOUMN_MAP.get(fn);

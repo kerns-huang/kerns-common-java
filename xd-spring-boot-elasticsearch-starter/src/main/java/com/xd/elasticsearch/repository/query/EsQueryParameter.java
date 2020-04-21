@@ -1,6 +1,5 @@
 package com.xd.elasticsearch.repository.query;
 
-import com.xd.core.lambda.LambdaUtil;
 import com.xd.core.lambda.SFunction;
 import com.xd.elasticsearch.core.enums.OrderType;
 import com.xd.elasticsearch.repository.metadata.IndexInfoHelper;
@@ -38,7 +37,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
         if (ArrayUtils.isNotEmpty(fields)) {
             for (SFunction<O, ?> field : fields) {
                 //TODO 需要考虑下 添加indexField的情况
-                select.add(IndexInfoHelper.getCloumn(field));
+                select.add(IndexInfoHelper.getColumn(field));
             }
         }
         return this;
@@ -46,7 +45,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
 
     @Override
     public <O, F> EsQueryParameter eq(SFunction<O, F> filed, Object value) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " = " + value);
         return this;
     }
@@ -54,7 +53,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
 
     @Override
     public <O, F> EsQueryParameter in(SFunction<O, F> filed, Collection<?> values) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " in " + values.stream().map(i -> String.format("%s", i)).collect(Collectors.joining(",", "(", ")")) + " ");
         return this;
     }
@@ -62,41 +61,41 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
 
     @Override
     public <O, F> EsQueryParameter ne(SFunction<O, F> filed, Object val) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " <= " + val);
         return this;
     }
 
     @Override
     public <O, F> EsQueryParameter gt(SFunction<O, F> filed, Object val) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " > " + val);
         return this;
     }
 
     @Override
     public <O, F> EsQueryParameter ge(SFunction<O, F> filed, Object val) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " >= " + val);
         return this;
     }
 
     @Override
     public <O, F> EsQueryParameter lt(SFunction<O, F> filed, Object val) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " < " + val);
         return this;
     }
 
     @Override
     public <O, F> EsQueryParameter le(SFunction<O, F> filed, Object val) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " <= " + val);
         return this;
     }
 
     public <O, F> EsQueryParameter like(SFunction<O, F> filed, String value) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " like '%" + value + "%'");
         return this;
     }
@@ -107,21 +106,21 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
      */
     @Override
     public <O, F> EsQueryParameter leftLike(SFunction<O, F> filed, String value) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " like '%" + value + "%'");
         return this;
     }
 
     @Override
     public <O, F> EsQueryParameter rightLike(SFunction<O, F> filed, String value) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         whereCondition.add(column + " like '" + value + "%'");
         return this;
     }
 
 
     public <O, F> EsQueryParameter order(SFunction<O, F> filed, OrderType orderType) {
-        String column = IndexInfoHelper.getCloumn(filed);
+        String column = IndexInfoHelper.getColumn(filed);
         orderCondition.add(column + " " + orderType.getValue());
         return this;
     }
@@ -136,7 +135,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
      */
     public <O, F> EsQueryParameter orderDesc(SFunction<O, F>... fields) {
         for (SFunction<O, F> field : fields) {
-            String column = IndexInfoHelper.getCloumn(field);
+            String column = IndexInfoHelper.getColumn(field);
             orderCondition.add(column + " " + OrderType.DESC.getValue());
         }
         return this;
@@ -144,7 +143,7 @@ public class EsQueryParameter extends AbstractQuery<EsQueryParameter> {
 
     public <O, F> EsQueryParameter order(SFunction<O, F>... fields) {
         for (SFunction<O, F> field : fields) {
-            String column = IndexInfoHelper.getCloumn(field);
+            String column = IndexInfoHelper.getColumn(field);
             orderCondition.add(column);
         }
         return this;
