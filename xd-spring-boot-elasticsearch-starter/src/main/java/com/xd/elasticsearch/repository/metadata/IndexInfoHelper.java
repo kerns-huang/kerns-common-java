@@ -6,7 +6,6 @@ import com.xd.core.reflect.ReflectUtil;
 import com.xd.core.util.StringUtils;
 import com.xd.elasticsearch.core.anno.EsIndex;
 import com.xd.elasticsearch.core.anno.EsIndexField;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -28,8 +27,10 @@ public class IndexInfoHelper {
      * 储存反射类表信息
      */
     private static final Map<Class<?>, IndexInfo> INDEX_INFO_MAP = new ConcurrentHashMap<>();
-
-    private static final Map<SFunction, String> FUNCTION_CLOUMN_MAP = new ConcurrentHashMap<>();
+    /**
+     * lambda 函数和 列的对应关系
+     */
+    private static final Map<SFunction, String> FUNCTION_COLUMN_MAP = new ConcurrentHashMap<>();
 
     public static IndexInfo getIndexInfo(Class clazz) {
         if (!INDEX_INFO_MAP.containsKey(clazz)) {
@@ -40,8 +41,8 @@ public class IndexInfoHelper {
 
     public static String getColumn(SFunction fn) {
         try {
-            if (FUNCTION_CLOUMN_MAP.containsKey(fn)) {
-                return FUNCTION_CLOUMN_MAP.get(fn);
+            if (FUNCTION_COLUMN_MAP.containsKey(fn)) {
+                return FUNCTION_COLUMN_MAP.get(fn);
             }
             SerializedLambda serializedLambda = getSerializedLambda(fn);
             String getter = serializedLambda.getImplMethodName();
@@ -57,7 +58,7 @@ public class IndexInfoHelper {
             } else {
                 column = indexField.value();
             }
-            FUNCTION_CLOUMN_MAP.put(fn, column);
+            FUNCTION_COLUMN_MAP.put(fn, column);
             return column;
         } catch (Exception var5) {
             throw new UnsupportedOperationException("method can not find cache key");
