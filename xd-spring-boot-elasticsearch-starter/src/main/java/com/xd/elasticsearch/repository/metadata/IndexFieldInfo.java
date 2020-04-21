@@ -15,11 +15,11 @@ import java.lang.reflect.Field;
 @Getter
 public class IndexFieldInfo {
     /**
-     * 字段名
+     * 对应的字段名
      */
     private final String column;
     /**
-     * 属性名
+     * 对应的属性名
      */
     private final String property;
 

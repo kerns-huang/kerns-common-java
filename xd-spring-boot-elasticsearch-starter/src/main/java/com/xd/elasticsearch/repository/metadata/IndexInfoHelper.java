@@ -1,10 +1,17 @@
 package com.xd.elasticsearch.repository.metadata;
 
+import com.xd.core.lambda.PropertyNamer;
+import com.xd.core.lambda.SFunction;
 import com.xd.core.reflect.ReflectUtil;
 import com.xd.core.util.StringUtils;
 import com.xd.elasticsearch.core.anno.EsIndex;
+import com.xd.elasticsearch.core.anno.EsIndexField;
+import org.apache.commons.lang3.ClassUtils;
 
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,12 +29,45 @@ public class IndexInfoHelper {
      */
     private static final Map<Class<?>, IndexInfo> INDEX_INFO_MAP = new ConcurrentHashMap<>();
 
+    private static final Map<SFunction, String> FUNCTION_CLOUMN_MAP = new ConcurrentHashMap<>();
 
     public static IndexInfo getIndexInfo(Class clazz) {
         if (!INDEX_INFO_MAP.containsKey(clazz)) {
             INDEX_INFO_MAP.put(clazz, initIndexInfo(clazz));
         }
         return INDEX_INFO_MAP.get(clazz);
+    }
+
+    public static String getCloumn(SFunction fn) {
+        try {
+            if (FUNCTION_CLOUMN_MAP.containsKey(fn)) {
+                return FUNCTION_CLOUMN_MAP.get(fn);
+            }
+            SerializedLambda serializedLambda = getSerializedLambda(fn);
+            String getter = serializedLambda.getImplMethodName();
+            Class cla = Class.forName(serializedLambda.getImplClass().replace("/", "."));
+            String name = PropertyNamer.methodToProperty(getter);
+            Field field = cla.getDeclaredField(name);
+            EsIndexField indexField = field.getAnnotation(EsIndexField.class);
+            String column = null;
+            if (null == indexField || StringUtils.isBlank(indexField.value())) {
+                column = field.getName();
+                column = StringUtils.camelToUnderline(column);
+                column = column.toLowerCase();
+            } else {
+                column = indexField.value();
+            }
+            FUNCTION_CLOUMN_MAP.put(fn, column);
+            return column;
+        } catch (Exception var5) {
+            throw new UnsupportedOperationException("method can not find cache key");
+        }
+    }
+
+    private static <T> SerializedLambda getSerializedLambda(SFunction<T, ?> fn) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = fn.getClass().getDeclaredMethod("writeReplace");
+        method.setAccessible(Boolean.TRUE);
+        return (SerializedLambda) method.invoke(fn);
     }
 
     /**
@@ -59,8 +99,8 @@ public class IndexInfoHelper {
             tableName = StringUtils.camelToUnderline(tableName);
             // 大写命名判断
             tableName = tableName.toLowerCase();
-        }else {
-            tableName=esIndex.value();
+        } else {
+            tableName = esIndex.value();
         }
         return tableName;
 
