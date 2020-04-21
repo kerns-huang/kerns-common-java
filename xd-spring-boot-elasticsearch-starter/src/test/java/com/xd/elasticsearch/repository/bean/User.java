@@ -14,7 +14,7 @@ import java.util.Date;
  * @since 2019-11-26
  */
 @Data
-@EsIndex(value = "user")
+@EsIndex(value = "user_1")
 public class User implements Serializable {
     private static final long serialVersionUID = 7930371866124379726L;
     private Integer id ;
