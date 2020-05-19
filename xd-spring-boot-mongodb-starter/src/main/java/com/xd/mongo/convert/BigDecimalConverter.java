@@ -23,8 +23,8 @@ public class BigDecimalConverter implements GenericConverter {
 
     @Override
     public Object convert(Object o, TypeDescriptor typeDescriptor, TypeDescriptor typeDescriptor1) {
-        if(o instanceof BigDecimal){
-            return ((BigDecimal)o).doubleValue();
+        if (o != null && (o instanceof BigDecimal)) {
+            return ((BigDecimal) o).doubleValue();
         }
         return null;
     }
