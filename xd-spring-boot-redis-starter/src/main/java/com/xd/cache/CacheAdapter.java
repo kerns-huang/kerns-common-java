@@ -81,11 +81,24 @@ public class CacheAdapter {
         return (O)redisTemplate.opsForValue().get(key);
     }
 
-
+    /**
+     * list 操作 ，从底部插入数据
+     * @param key
+     * @param list
+     * @param <O>
+     * @return
+     */
     public <O> Long rPush(String key, O obj) {
         return toStringRedisTemplate.opsForList().rightPush(key, obj);
     }
 
+    /**
+     * list 操作 ，从底部插入数据
+     * @param key
+     * @param list
+     * @param <O>
+     * @return
+     */
     public <O> Long rPushAll(String key,Collection<O> list){
         return redisTemplate.opsForList().rightPushAll(key,list);
     }
@@ -172,6 +185,8 @@ public class CacheAdapter {
     public Long sCard(String key) {
         return toStringRedisTemplate.opsForSet().size(key);
     }
+
+
 
     /**
      * 判断是否是set成员
