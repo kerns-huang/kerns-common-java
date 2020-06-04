@@ -22,7 +22,7 @@ public class RequestContextInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String path = request.getServletPath();
-        if(!StringUtils.contains(path,CLIENT)){
+        if(!StringUtils.containsIgnoreCase(path,CLIENT)){
             return  true;
         }
         String uid = request.getHeader("uid");
