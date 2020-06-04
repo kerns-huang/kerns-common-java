@@ -29,6 +29,9 @@ public  class ImageUrlSerializer extends StdScalarSerializer<String> implements 
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
+        if(beanProperty==null){
+            return new StringSerializer();
+        }
         ImageUrl imageUrl = beanProperty.getAnnotation(ImageUrl.class);
         if (imageUrl == null) {
             //如果没有注解，返回正常的string串
