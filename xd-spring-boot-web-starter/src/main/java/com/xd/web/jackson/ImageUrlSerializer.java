@@ -21,10 +21,10 @@ import java.io.IOException;
  * @create 2020-04-10 下午3:31
  **/
 @Setter
-public  class ImageUrlSerializer extends StdScalarSerializer<String> implements ContextualSerializer {
+public class ImageUrlSerializer extends StdScalarSerializer<String> implements ContextualSerializer {
 
     public ImageUrlSerializer() {
-        super(String.class,false);
+        super(String.class, false);
     }
 
     @Override
@@ -37,23 +37,26 @@ public  class ImageUrlSerializer extends StdScalarSerializer<String> implements 
             //如果没有注解，返回正常的string串
             return new StringSerializer();
         }
-        if(imageUrl.group()!=null){
-           switch (imageUrl.group()){
-               case "country":
-               case "pay_type":
-               case "vip_icon":
-               case "symbol":
-                   return new PrefixUrlSerializer(imageUrl.group());
-               default:
-                   return new StringSerializer();
-           }
+        if (imageUrl.group() != null) {
+            switch (imageUrl.group()) {
+                case "symbol":
+                case "country":
+                    return new PrefixUrlSerializer(imageUrl.group());
+                case "pay_type":
+                case "vip_icon":
+                    return new PrefixUrlSerializer(imageUrl.group().replace("_", "-"));
+                case "avatar":
+                    return new AvatarSerializer();
+                default:
+                    return new StringSerializer();
+            }
         }
         return this;
     }
 
     @Override
     public void serialize(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-              jsonGenerator.writeString("");
+        jsonGenerator.writeString("");
     }
 
 }
