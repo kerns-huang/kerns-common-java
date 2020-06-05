@@ -16,9 +16,9 @@ public class AvatarSerializer extends StdScalarSerializer<String> {
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         if (StringUtils.isEmpty(value)) {
-            gen.writeArrayFieldStart("/default/default_avatar.png");
+            gen.writeString("/default/default_avatar.png");
         } else {
-            gen.writeArrayFieldStart(value);
+            gen.writeString(value);
         }
     }
 }
