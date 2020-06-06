@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.xd.web.config.WebConfig,\
-  com.xd.web.config.JsonConfig
