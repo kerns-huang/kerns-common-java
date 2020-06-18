@@ -3,6 +3,8 @@ package io.kerns.web.response;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
 public class Result<T> {
     @ApiModelProperty(value = "返回的状态")
@@ -14,8 +16,7 @@ public class Result<T> {
     @ApiModelProperty(value = "返回的对象")
     private T data;
     @ApiModelProperty(value = "当前时间，以秒为单位")
-    private Long current=System.currentTimeMillis()/1000;
-
+    private Long current = Instant.now().getEpochSecond();
 
 
 }

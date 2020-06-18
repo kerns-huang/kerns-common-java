@@ -1,5 +1,8 @@
 package io.kerns.web.response;
 
+/**
+ * 返回结果的辅助类
+ */
 public class ResultUtils {
 
     public static Result success(Object data) {

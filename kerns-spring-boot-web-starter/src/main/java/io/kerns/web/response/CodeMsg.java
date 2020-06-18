@@ -1,7 +1,7 @@
 package io.kerns.web.response;
 
 /**
- * 获取消息
+ * 返回信息的接口类
  * @param <S>
  * @param <T>
  */

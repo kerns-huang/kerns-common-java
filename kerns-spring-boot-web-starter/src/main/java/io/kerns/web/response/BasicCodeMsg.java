@@ -1,11 +1,13 @@
 package io.kerns.web.response;
 
+/**
+ * 基本的错误信息
+ */
 public enum BasicCodeMsg implements CodeMsg {
     PARAM_ERROR("1004", "參數錯誤"),
 
     UN_LOGIN("1001", "未登录"),
 
-    AUTH_FAILED("14005", "參數appkey不正確"),
 
     ;
     private String code;
