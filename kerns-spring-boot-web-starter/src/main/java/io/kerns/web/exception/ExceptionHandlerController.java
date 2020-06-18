@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * @author heige
- * exception exception 统一返回 Result
+ * exception  异常统一返回 Result
  */
 @RestControllerAdvice
 @Slf4j
