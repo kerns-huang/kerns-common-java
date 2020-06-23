@@ -15,6 +15,7 @@
     <modules>
         <module>kerns-spring-boot-swagger-starter</module>
         <module>kerns-spring-boot-web-starter</module>
+        <module>kerns-spring-boot-mongo-starter</module>
     </modules>
     <dependencies>
         <dependency>
