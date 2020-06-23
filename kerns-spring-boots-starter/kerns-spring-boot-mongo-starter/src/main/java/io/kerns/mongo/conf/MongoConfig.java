@@ -21,6 +21,7 @@ import java.util.List;
 public class MongoConfig {
     /**
      * 单个mongo的情况下不支持事务的操作，所以事务相关的处理，必须是一个replication的模式，
+     * 具体的搭建 资料 查看 http://www.warmjoke.com/2020/05/29/%E5%9F%BA%E4%BA%8Edocker%E6%90%AD%E5%BB%BAmongodb/
      * @param dbFactory
      * @return
      */
