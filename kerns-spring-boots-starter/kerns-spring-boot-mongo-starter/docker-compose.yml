@@ -1,0 +1,23 @@
+version: '3'
+services:
+  rs1:
+    image: mongo:latest
+    container_name: "mongo-rs-1"
+    network_mode: "host"
+    volumes:
+      - /home/data/mongodb/rs1:/data/db
+    command: mongod --port 57017 --dbpath /data/db --replSet mongoreplset
+  rs2:
+    image: mongo:latest
+    container_name: "mongo-rs-2"
+    network_mode: "host"
+    volumes:
+      - /home/data/mongodb/rs2:/data/db
+    command: mongod --port 57018 --dbpath /data/db --replSet mongoreplset
+  rs3:
+    image: mongo:latest
+    container_name: "mongo-rs-3"
+    network_mode: "host"
+    volumes:
+      - /home/data/mongodb/rs3:/data/db
+    command: mongod --port 57019 --dbpath /data/db --replSet mongoreplset

@@ -19,14 +19,17 @@ import java.util.List;
  **/
 @Configuration
 public class MongoConfig {
-
+    /**
+     * 单个mongo的情况下不支持事务的操作，所以事务相关的处理，必须是一个replication的模式，
+     * @param dbFactory
+     * @return
+     */
     @Bean
     MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
     @Bean
-    public MongoCustomConversions customConversions()
-    {
+    public MongoCustomConversions customConversions(){
         List<GenericConverter> converterList = new ArrayList<GenericConverter>();
         converterList.add(new BigDecimalConverter());
         return new MongoCustomConversions(converterList);
